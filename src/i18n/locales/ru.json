@@ -2411,6 +2411,8 @@
     "label": "Обзор квот",
     "window_weekly": "Лимит на 7 дней",
     "window_five_hour": "Лимит на 5 часов",
+    "window_hours": "Лимит на {{hours}} ч",
+    "window_session": "Лимит сессии",
     "next_refill": "пополнение {{time}}",
     "no_resets": "—",
     "expiry_unknown": "без срока",

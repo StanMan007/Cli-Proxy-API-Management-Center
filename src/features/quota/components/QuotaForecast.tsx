@@ -7,6 +7,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconChevronDown, IconChevronUp } from '@/components/ui/icons';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import type { ResolvedTheme } from '@/types';
 import { TYPE_COLORS } from '@/utils/quota';
@@ -30,16 +31,21 @@ const PAST_MS = 2 * DAY_MS;
 export type QuotaForecastProps = {
   pools: OverviewPool[];
   history: PoolHistory;
+  /** Providers with no quota read yet; their headline and chart hold placeholders. */
+  pendingProviders: ReadonlySet<OverviewProvider>;
   now: number;
   resolvedTheme: ResolvedTheme;
   relative: (ms: number) => string;
 };
+
+const HEIGHT = 220;
 
 const pct = (value: number) => `${Math.round(value)}%`;
 
 export function QuotaForecast({
   pools,
   history,
+  pendingProviders,
   now,
   resolvedTheme,
   relative,
@@ -75,6 +81,7 @@ export function QuotaForecast({
 
   if (!pool || !model) return null;
   const { rate, base, withResets, past } = model;
+  const pending = pendingProviders.has(pool.provider);
   const colors = TYPE_COLORS[pool.provider] ?? TYPE_COLORS.unknown;
   const color = (resolvedTheme === 'dark' && colors.dark ? colors.dark : colors.light).text;
   const at = (ms: number) =>
@@ -155,12 +162,18 @@ export function QuotaForecast({
       </div>
 
       <div className={styles.headline}>
-        <span className={styles.big} style={{ color }}>
-          {pct(pool.remaining)}
-        </span>
-        <span className={styles.of}>
-          {t('quota_overview.forecast_of', { capacity: pct(pool.capacity) })}
-        </span>
+        {pending ? (
+          <Skeleton width={170} height={44} rounded={8} />
+        ) : (
+          <>
+            <span className={styles.big} style={{ color }}>
+              {pct(pool.remaining)}
+            </span>
+            <span className={styles.of}>
+              {t('quota_overview.forecast_of', { capacity: pct(pool.capacity) })}
+            </span>
+          </>
+        )}
         {rate && (
           <span
             className={styles.stat}
@@ -181,7 +194,10 @@ export function QuotaForecast({
       </div>
 
       {open &&
-        (base ? (
+        (pending ? (
+          // The legend (18px), section gap (14px) and chart, so the panel keeps its height when quota lands.
+          <Skeleton height={HEIGHT + 32} rounded={10} />
+        ) : base ? (
           <>
             <div className={styles.legend}>
               <span>
@@ -220,28 +236,29 @@ export function QuotaForecast({
 
       <div className={styles.foot}>
         <span>
-          {nextRefill
-            ? t('quota_overview.forecast_next_refill', {
-                gain: pct(nextRefill.gain),
-                time: at(nextRefill.t),
-              })
-            : pool.nextRefillMs !== null
-              ? t('quota_overview.next_refill', { time: relative(pool.nextRefillMs) })
-              : null}
+          {pending ? (
+            <Skeleton width={220} height={18} rounded={6} />
+          ) : nextRefill ? (
+            t('quota_overview.forecast_next_refill', {
+              gain: pct(nextRefill.gain),
+              time: at(nextRefill.t),
+            })
+          ) : pool.nextRefillMs !== null ? (
+            t('quota_overview.next_refill', { time: relative(pool.nextRefillMs) })
+          ) : null}
         </span>
         {withResets ? (
           <span>
             {t('quota_overview.forecast_resets_outlook', { outlook: outlook(withResets.dryAtMs) })}
           </span>
         ) : (
-          open && past.length < 2 && <span>{t('quota_overview.forecast_history_note')}</span>
+          open && !pending && past.length < 2 && <span>{t('quota_overview.forecast_history_note')}</span>
         )}
       </div>
     </section>
   );
 }
 
-const HEIGHT = 220;
 const PAD = { left: 46, right: 14, top: 18, bottom: 26 };
 
 type ForecastChartProps = {

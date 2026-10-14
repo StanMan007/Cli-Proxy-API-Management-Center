@@ -2417,6 +2417,8 @@
     "label": "Kota Özeti",
     "window_weekly": "7 Günlük Sınır",
     "window_five_hour": "5 Saatlik Sınır",
+    "window_hours": "{{hours}} Saatlik Sınır",
+    "window_session": "Oturum Sınırı",
     "next_refill": "Sonraki Yenileme {{time}}",
     "no_resets": "—",
     "expiry_unknown": "Bitiş Yok",

@@ -2417,6 +2417,8 @@
     "label": "할당량 개요",
     "window_weekly": "7일 한도",
     "window_five_hour": "5시간 한도",
+    "window_hours": "{{hours}}시간 한도",
+    "window_session": "세션 한도",
     "next_refill": "다음 충전 {{time}}",
     "no_resets": "—",
     "expiry_unknown": "만료 없음",

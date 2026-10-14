@@ -442,17 +442,62 @@ button.chipPrimary:hover:not(:disabled) {
   animation: spin 0.8s linear infinite;
 }
 
-.skeletonBar {
-  display: block;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--ov-inset);
-  animation: pulse 1.2s ease-in-out infinite;
+/*
+ * Load-in. Placeholders hold the loaded layout, so nothing jumps when quota lands. The
+ * page skeleton waits a beat before showing, so a fast (cached) load never flashes it.
+ * A row that mounted empty fades its quota in and grows its bars from zero.
+ */
+.overviewSkeleton {
+  animation: fadeIn 0.3s var(--ease-out-strong) 0.15s both;
 }
 
-@keyframes pulse {
-  50% {
-    opacity: 0.4;
+.placeholderHead {
+  display: flex;
+  align-items: center;
+  height: 18px;
+
+  .windowMinor & {
+    height: 16px;
+  }
+}
+
+.bar > i {
+  transition: width 0.6s var(--ease-out-strong);
+}
+
+.arrived {
+  .limits,
+  .resetList {
+    animation: fadeIn 0.35s var(--ease-out-strong) both;
+  }
+
+  .bar > i {
+    animation: barGrow 0.8s var(--ease-out-strong) both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes barGrow {
+  from {
+    width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overviewSkeleton,
+  .arrived .limits,
+  .arrived .resetList,
+  .arrived .bar > i {
+    animation: none;
+  }
+
+  .bar > i {
+    transition: none;
   }
 }
 
@@ -483,6 +528,7 @@ button.chipPrimary:hover:not(:disabled) {
   .columns,
   .windowWhen,
   .row > .resetList,
+  .row > .resetsPlaceholder,
   .row > .none {
     display: none;
   }

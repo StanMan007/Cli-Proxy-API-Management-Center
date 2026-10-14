@@ -2444,6 +2444,8 @@
     "label": "額度總覽",
     "window_weekly": "7 天限額",
     "window_five_hour": "5 小時限額",
+    "window_hours": "{{hours}} 小時限額",
+    "window_session": "工作階段限額",
     "next_refill": "下次恢復 {{time}}",
     "resets_expiring": "{{count}} 個於 {{date}} 到期",
     "no_resets": "—",

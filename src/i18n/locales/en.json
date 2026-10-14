@@ -2417,6 +2417,8 @@
     "label": "Quota overview",
     "window_weekly": "7-day limit",
     "window_five_hour": "5-hour limit",
+    "window_hours": "{{hours}}-hour limit",
+    "window_session": "Session limit",
     "next_refill": "next refill {{time}}",
     "no_resets": "—",
     "expiry_unknown": "no expiry",

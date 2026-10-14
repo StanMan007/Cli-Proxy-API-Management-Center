@@ -26,7 +26,7 @@ import type { AuthFileItem, ResolvedTheme } from '@/types';
 import { isDisabledAuthFile } from '@/utils/quota';
 import { getQuotaCacheKey } from '@/utils/quota/identity';
 import { QuotaHeader } from './components/QuotaHeader';
-import { QuotaOverview } from './components/QuotaOverview';
+import { QuotaOverview, QuotaOverviewSkeleton } from './components/QuotaOverview';
 import { QuotaCard } from './components/QuotaCard';
 import { QuotaTimeline } from './components/QuotaTimeline';
 import {
@@ -47,7 +47,7 @@ import {
   sortQuotaEntries,
   type QuotaFileEntry,
 } from './logic';
-import { OVERVIEW_PROVIDERS } from './overview';
+import { isOverviewProvider } from './overview';
 import { nextRecoveryMs } from './resetSchedule';
 import { QUOTA_ADAPTERS, getQuotaSetter, type QuotaCardState } from './providers';
 import type { QuotaProviderType } from './providers/types';
@@ -200,7 +200,7 @@ export function QuotaPage() {
     [liveEntries, activeTab]
   );
   const overviewEntries = useMemo(
-    () => entries.filter((entry) => (OVERVIEW_PROVIDERS as readonly string[]).includes(entry.type)),
+    () => entries.filter((entry) => isOverviewProvider(entry.type)),
     [entries]
   );
   const filteredEntries = useMemo(
@@ -418,6 +418,14 @@ export function QuotaPage() {
   /* ---------- 渲染 ---------- */
 
   const isEmpty = !loading && filteredEntries.length === 0;
+  // Until the first credential list arrives, hold the overview's layout rather than the
+  // detailed cards' skeleton, which would vanish once the overview takes over. A remembered
+  // tab for another provider keeps the cards' skeleton: that's what it will show.
+  const showOverviewSkeleton =
+    loading &&
+    files.length === 0 &&
+    !detailsOpen &&
+    (tab === 'all' || isOverviewProvider(tab));
 
   return (
     <div className={styles.page} ref={revealRef}>
@@ -431,10 +439,14 @@ export function QuotaPage() {
         onRefreshAll={handleRefreshAll}
       />
 
+      {showOverviewSkeleton && <QuotaOverviewSkeleton />}
       <QuotaOverview
         entries={shownLiveEntries}
         needsLoginCount={filterEntriesByTab(allEntries, activeTab).length - shownLiveEntries.length}
         quotaFor={getQuota}
+        firstLoadPending={
+          overviewLoadedGeneration !== sessionGeneration && !disableControls && !error
+        }
         now={now}
         resolvedTheme={resolvedTheme}
         canUseActions={canUseActions}
@@ -447,11 +459,10 @@ export function QuotaPage() {
         onSetEnabled={(entry, enabled) => void setCredentialEnabled(entry.file, enabled)}
       />
 
-      {/* A provider with no overview group (Muse, Kimi…) shows its detailed cards directly. */}
+      {/* A provider with no overview group (Kimi, xAI…) shows its detailed cards directly. */}
       {(detailsOpen ||
-        !shownLiveEntries.some((entry) =>
-          (OVERVIEW_PROVIDERS as readonly string[]).includes(entry.type)
-        )) && (
+        (!showOverviewSkeleton &&
+          !shownLiveEntries.some((entry) => isOverviewProvider(entry.type)))) && (
         <section className={styles.workbench}>
           <div className={styles.toolbar}>
             <div className={styles.search}>
