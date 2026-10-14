@@ -448,7 +448,7 @@ button.chipPrimary:hover:not(:disabled) {
  * A row that mounted empty fades its quota in and grows its bars from zero.
  */
 .overviewSkeleton {
-  animation: fadeIn 0.3s var(--ease-out-strong) 0.15s both;
+  animation: fadeIn var(--dur-hover) var(--ease-out-strong) var(--dur-press) both;
 }
 
 .placeholderHead {
@@ -462,17 +462,17 @@ button.chipPrimary:hover:not(:disabled) {
 }
 
 .bar > i {
-  transition: width 0.6s var(--ease-out-strong);
+  transition: width var(--dur-hover) var(--ease-out-strong);
 }
 
 .arrived {
   .limits,
   .resetList {
-    animation: fadeIn 0.35s var(--ease-out-strong) both;
+    animation: fadeIn var(--dur-hover) var(--ease-out-strong) both;
   }
 
   .bar > i {
-    animation: barGrow 0.8s var(--ease-out-strong) both;
+    animation: barGrow var(--dur-hover) var(--ease-out-strong) both;
   }
 }
 
