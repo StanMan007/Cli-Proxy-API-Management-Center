@@ -2277,6 +2277,8 @@
     "label": "Tổng quan hạn mức",
     "window_weekly": "Hạn mức 7 ngày",
     "window_five_hour": "Giới hạn 5 giờ",
+    "window_hours": "Giới hạn {{hours}} giờ",
+    "window_session": "Giới hạn phiên",
     "next_refill": "nạp lại {{time}}",
     "no_resets": "—",
     "expiry_unknown": "không hết hạn",
