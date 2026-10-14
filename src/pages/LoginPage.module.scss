@@ -114,26 +114,21 @@
   height: 80px;
   border-radius: $radius-lg;
   object-fit: cover;
-  box-shadow: var(--shadow-lg);
-  border: 3px solid var(--border-color);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
 }
 
 // 登录表单卡片
 .loginCard {
   width: 100%;
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: $radius-lg;
-  box-shadow: var(--shadow-lg);
-  padding: $spacing-xl;
+  border-radius: 16px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
   gap: $spacing-lg;
 
   @media (max-width: $breakpoint-mobile) {
     padding: $spacing-lg;
-    box-shadow: none;
-    border: none;
     background: transparent;
   }
 }
@@ -157,15 +152,16 @@
 
 // 标题
 .title {
-  font-size: 22px;
-  font-weight: 800;
+  font-size: clamp(24px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
 // 副标题
 .subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 // 语言下拉选择
@@ -176,17 +172,19 @@
 
 // 连接信息框
 .connectionBox {
-  background: var(--bg-secondary);
-  border: 1px dashed var(--border-color);
-  border-radius: $radius-md;
-  padding: $spacing-md;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
 
   .label {
-    color: var(--text-secondary);
-    font-size: 14px;
+    color: var(--text-tertiary);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .value {
@@ -210,14 +208,13 @@
 
 .toggleLabel {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 
 // 错误提示框
 .errorBox {
-  background: rgba($error-color, 0.1);
-  border: 1px solid rgba($error-color, 0.4);
+  background: rgba($error-color, 0.12);
   border-radius: $radius-md;
   padding: $spacing-sm $spacing-md;
   color: $error-color;
@@ -289,10 +286,10 @@
 // 启动动画标题
 .splashTitle {
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
 }
 
 // 启动动画副标题
@@ -308,7 +305,7 @@
 .splashLoader {
   width: 120px;
   height: 3px;
-  background: var(--border-color);
+  background: var(--bg-tertiary);
   border-radius: $radius-full;
   overflow: hidden;
   margin-top: $spacing-md;
@@ -318,7 +315,7 @@
 .splashLoaderBar {
   width: 100%;
   height: 100%;
-  background: var(--primary-color);
+  background: var(--text-secondary);
   border-radius: $radius-full;
   animation: splashLoading 1.2s ease-in-out infinite;
 }

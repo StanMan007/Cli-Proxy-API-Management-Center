@@ -3,8 +3,9 @@
 }
 
 .pageTitle {
-  font-size: 28px;
+  font-size: clamp(26px, 3.2vw, 30px);
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin: 0 0 $spacing-xl 0;
 }
@@ -34,7 +35,7 @@
   height: 108px;
   border-radius: 26px;
   object-fit: cover;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
 }
 
 .aboutTitle {
@@ -64,59 +65,58 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-height: 120px;
-  padding: $spacing-md $spacing-lg;
+  min-height: 104px;
+  padding: 16px 20px;
   border-radius: $radius-lg;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  background: var(--bg-tertiary);
   text-align: left;
 }
 
 .tapTile {
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-secondary) 82%, transparent);
+  border: none;
   color: inherit;
+  font: inherit;
   padding: $spacing-md $spacing-lg;
   cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    transform: translateY(-1px);
-    border-color: var(--primary-color);
-    box-shadow: 0 8px 18px rgba($primary-color, 0.18);
+    background: var(--bg-hover);
   }
 
-  &:active {
-    transform: translateY(0);
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 .tileLabel {
-  font-size: 13px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
 .tileHeader {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: $spacing-sm;
-  min-height: 40px;
+  min-height: 16px;
 }
 
 .tileAction {
   flex-shrink: 0;
   white-space: nowrap;
-  margin: -4px -8px 0 0;
+  margin: -8px -8px -8px 0;
 }
 
 .tileValue {
   font-size: 22px;
   font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   line-height: 1.25;
   word-break: break-word;
@@ -135,14 +135,14 @@
 }
 
 .sectionTitle {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 $spacing-md 0;
 }
 
 .sectionDescription {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin: 0 0 $spacing-md 0;
 }
@@ -160,8 +160,8 @@
   .infoRow {
     display: flex;
     justify-content: space-between;
-    padding: $spacing-sm $spacing-md;
-    background-color: var(--bg-secondary);
+    padding: 10px 12px;
+    background-color: var(--bg-tertiary);
     border-radius: $radius-md;
 
     .label {
@@ -186,7 +186,7 @@
 
 .modelItem {
   padding: $spacing-sm $spacing-md;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-tertiary);
   border-radius: $radius-md;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 13px;
@@ -221,8 +221,8 @@
   gap: $spacing-xs;
   padding: 4px 10px;
   border-radius: $radius-full;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-tertiary);
+  font-size: 12px;
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
@@ -251,12 +251,15 @@
 
   .versionItem {
     padding: $spacing-md;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-tertiary);
     border-radius: $radius-md;
 
     .label {
-      font-size: 12px;
-      color: var(--text-secondary);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
       margin-bottom: $spacing-xs;
     }
 
@@ -279,23 +282,15 @@
   display: flex;
   align-items: center;
   gap: $spacing-md;
-  padding: $spacing-md $spacing-lg;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  padding: 14px 16px;
+  background-color: var(--bg-tertiary);
   border-radius: $radius-lg;
   text-decoration: none;
   color: inherit;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
 
   &:hover {
     background-color: var(--bg-hover);
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 }
 
@@ -303,16 +298,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: $radius-md;
-  background-color: #24292f;
-  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   flex-shrink: 0;
 
   &.github,
   &.docs {
-    background-color: #24292f;
+    color: var(--text-primary);
   }
 }
 

@@ -1,21 +1,17 @@
 @use '../../../styles/mixins' as *;
 
-/* 分区卡片：自然高度，无固定高度/无滚动吸附（旧轮播已退役） */
+/* 分区：无框的平铺分组（标题 + 内容），面板感交给内部的设置列表；
+   自然高度，无固定高度/无滚动吸附（旧轮播已退役） */
 
 .card {
   display: flex;
   flex-direction: column;
-  gap: clamp(16px, 2vw, 22px);
+  gap: 16px;
   min-width: 0;
   box-sizing: border-box;
-  padding: clamp(20px, 2.4vw, 28px);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
 
   @include mobile {
     gap: 14px;
-    padding: 16px;
   }
 }
 
@@ -37,12 +33,10 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
   align-items: start;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 0 2px;
 
   @include mobile {
     grid-template-columns: minmax(0, 1fr);
-    padding-bottom: 12px;
   }
 }
 
@@ -57,43 +51,42 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 28px;
+  min-width: 30px;
+  height: 22px;
   padding: 0 8px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-secondary);
+  border-radius: 999px;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
   font-family: $font-mono;
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 10.5px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 .iconBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  color: var(--text-secondary);
+  width: 22px;
+  height: 22px;
+  color: var(--text-tertiary);
   flex: 0 0 auto;
 }
 
 .heading {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
 .title {
   margin: 0;
   color: var(--text-primary);
-  font-size: clamp(18px, 1.6vw, 22px);
-  font-weight: 680;
-  line-height: 1.18;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
   letter-spacing: -0.01em;
 }
 
@@ -102,7 +95,7 @@
   max-width: 72ch;
   color: var(--text-secondary);
   font-size: 13px;
-  line-height: 1.65;
+  line-height: 1.55;
 
   @include mobile {
     max-width: none;

@@ -1,16 +1,15 @@
 @use '../../../styles/mixins' as *;
 @use '../../../styles/variables' as *;
 
+/* Borderless panel, as on the quota page: fill tone and space carry the structure. */
 .panel {
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 20px;
+  border-radius: 14px;
+  padding: 20px 22px;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .header {
@@ -56,7 +55,7 @@
   max-width: 100%;
   margin: -4px -6px;
   padding: 4px 6px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   color: inherit;
   text-decoration: none;
   cursor: pointer;
@@ -74,15 +73,15 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 3px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 .logo {
   width: 26px;
   height: 26px;
-  border-radius: var(--radius-md);
+  border-radius: 7px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -118,15 +117,15 @@
 
 .title {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.02em;
 }
 
 .titleExternalIcon {
   flex-shrink: 0;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   opacity: 0.72;
   transition:
     color 0.16s ease,
@@ -140,11 +139,10 @@
   gap: 8px;
   width: fit-content;
   color: var(--text-primary);
-  margin-top: 10px;
-  padding: 8px 11px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
+  margin-top: 12px;
+  padding: 7px 14px;
+  border-radius: $radius-full;
+  background: var(--bg-tertiary);
   font-size: 13px;
   font-weight: 600;
   line-height: 1.4;
@@ -152,55 +150,34 @@
   overflow-wrap: anywhere;
   text-decoration: none;
   transition:
-    background 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease,
-    box-shadow 0.16s ease,
-    transform 0.16s ease;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--border-hover);
     background: var(--bg-hover);
-    transform: translateY(-1px);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 .sponsorLinkEmphasis {
   color: var(--amber-text);
-  border-color: color-mix(in srgb, var(--amber-color) 48%, var(--border-color));
-  background: color-mix(in srgb, var(--amber-color) 14%, var(--bg-primary));
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--amber-color) 18%, transparent);
+  background: color-mix(in srgb, var(--amber-color) 12%, transparent);
 
   &:hover {
-    border-color: color-mix(in srgb, var(--amber-color) 72%, var(--border-color));
-    background: color-mix(in srgb, var(--amber-color) 20%, var(--bg-primary));
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--amber-color) 18%, transparent);
-  }
-
-  &:focus-visible {
-    outline-color: var(--amber-color);
+    background: color-mix(in srgb, var(--amber-color) 18%, transparent);
   }
 }
 
 .sponsorLinkKimi {
   color: color-mix(in srgb, #1783ff 82%, var(--text-primary));
-  border-color: color-mix(in srgb, #1783ff 48%, var(--border-color));
-  background: color-mix(in srgb, #1783ff 14%, var(--bg-primary));
-  box-shadow: 0 1px 0 color-mix(in srgb, #1783ff 18%, transparent);
+  background: color-mix(in srgb, #1783ff 12%, transparent);
 
   &:hover {
-    border-color: color-mix(in srgb, #1783ff 72%, var(--border-color));
-    background: color-mix(in srgb, #1783ff 20%, var(--bg-primary));
-    box-shadow: 0 4px 12px color-mix(in srgb, #1783ff 18%, transparent);
-  }
-
-  &:focus-visible {
-    outline-color: #1783ff;
+    background: color-mix(in srgb, #1783ff 18%, transparent);
   }
 }
 
@@ -238,23 +215,29 @@
 
 .searchInput {
   width: 100%;
-  height: 38px;
-  padding: 0 12px 0 38px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  height: 36px;
+  padding: 0 12px 0 36px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 13.5px;
   box-sizing: border-box;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &::placeholder {
-    color: var(--text-tertiary);
+    color: var(--text-quaternary);
+  }
+
+  &:hover:not(:focus) {
+    background: var(--bg-hover);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-10);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -263,52 +246,49 @@
   top: 50%;
   left: 13px;
   transform: translateY(-50%);
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   pointer-events: none;
   display: inline-flex;
 }
 
 .empty {
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 32px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  padding: 36px 32px;
   text-align: center;
-  color: var(--muted-foreground);
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 13.5px;
 }
 
 .emptyAction {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .emptyActionButton {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 13px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  border: none;
+  border-radius: $radius-full;
   background: var(--bg-primary);
   color: var(--text-primary);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
   line-height: 1.4;
   text-decoration: none;
   transition:
-    background 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease,
-    box-shadow 0.16s ease;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--border-hover);
     background: var(--bg-hover);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -319,18 +299,9 @@
 
 .emptyActionButtonEmphasis {
   color: var(--amber-text);
-  border-color: color-mix(in srgb, var(--amber-color) 48%, var(--border-color));
   background: color-mix(in srgb, var(--amber-color) 14%, var(--bg-primary));
-  font-weight: 600;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--amber-color) 18%, transparent);
 
   &:hover {
-    border-color: color-mix(in srgb, var(--amber-color) 72%, var(--border-color));
     background: color-mix(in srgb, var(--amber-color) 20%, var(--bg-primary));
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--amber-color) 18%, transparent);
-  }
-
-  &:focus-visible {
-    outline-color: var(--amber-color);
   }
 }

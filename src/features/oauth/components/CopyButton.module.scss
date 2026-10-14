@@ -18,8 +18,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:active {
@@ -44,15 +43,19 @@
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
   font-size: 12.5px;
   font-weight: 600;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .icon:hover,
-  .labeled:hover {
+  .icon:hover {
     background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  .labeled:hover {
+    background: var(--bg-hover);
     color: var(--text-primary);
   }
 

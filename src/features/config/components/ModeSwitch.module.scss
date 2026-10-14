@@ -8,7 +8,6 @@
   gap: 2px;
   padding: 2px;
   border-radius: $radius-full;
-  border: 1px solid var(--border-color);
   background: var(--bg-tertiary);
   flex-shrink: 0;
 }
@@ -20,7 +19,7 @@
   padding: 5px 12px;
   border-radius: $radius-full;
   font-size: 12px;
-  font-weight: 550;
+  font-weight: 500;
   line-height: 1.3;
   color: var(--text-secondary);
   white-space: nowrap;
@@ -40,8 +39,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: -1px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -53,11 +52,8 @@
 
 .segmentActive {
   color: var(--text-primary);
-  font-weight: 650;
-  background: var(--floating-surface, var(--bg-primary));
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+  background: var(--bg-primary);
 
   /* 整体禁用（保存/加载中）时激活段仍保持完整对比度 —— 当前模式本身是有效信息 */
   &:disabled {

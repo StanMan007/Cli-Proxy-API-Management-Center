@@ -1,6 +1,6 @@
 @use '../../../styles/mixins' as *;
 
-/* 悬浮批量操作条：底部居中的玻璃工具栏（--content-center-x 对齐内容列中心） */
+/* 悬浮批量操作条：底部居中的浮层工具栏（--content-center-x 对齐内容列中心） */
 
 .container {
   position: fixed;
@@ -20,12 +20,9 @@
   flex-wrap: wrap;
   gap: 8px 16px;
   padding: 10px 14px;
-  border-radius: 16px;
-  --glass-blur: 14px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-backdrop-filter);
-  box-shadow: var(--shadow-lg);
+  border-radius: 14px;
+  background: var(--floating-surface);
+  box-shadow: var(--floating-shadow);
 }
 
 .left,
@@ -37,9 +34,8 @@
 }
 
 .count {
-  font-family: $font-mono;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 12.5px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   padding-right: 4px;
@@ -50,7 +46,6 @@
   transition:
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
     background-color $transition-fast,
-    border-color $transition-fast,
     color $transition-fast;
 }
 

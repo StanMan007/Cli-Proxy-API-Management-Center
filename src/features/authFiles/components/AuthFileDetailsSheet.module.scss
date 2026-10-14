@@ -21,9 +21,8 @@
   line-height: 1.5;
   color: var(--danger-color);
   background: var(--bg-error-light);
-  border: 1px solid var(--warning-border);
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 10px 12px;
   overflow-wrap: anywhere;
 }
 
@@ -34,10 +33,9 @@
 }
 
 .label {
-  font-family: $font-mono;
   font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -50,20 +48,21 @@
   font-size: 12px;
   line-height: 1.55;
   color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  border: 0;
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 12px 14px;
+  transition: box-shadow 0.15s ease;
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-10);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
+/* 无边框：非法 JSON 用危险色环提示 */
 .textareaInvalid {
-  border-color: var(--danger-color) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger-color) 55%, transparent) !important;
 }
 
 .invalidPreview {
@@ -74,10 +73,9 @@
   font-size: 12px;
   line-height: 1.55;
   color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border: 1px dashed var(--border-hover);
+  background: var(--bg-tertiary);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -98,8 +96,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
     border-radius: 2px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
