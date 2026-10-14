@@ -1,18 +1,17 @@
 @use '../../../styles/mixins' as *;
 
 /* ============================================================
- * OAuth 配置双卡（排除模型 / 模型别名）共用外衣：panel 配方
- * （16px 圆角 / 1px 边框 / 82% 透感纸面），列表行走 mono 遥测。
+ * OAuth 配置双卡（排除模型 / 模型别名）共用外衣：配额页 panel 配方
+ * （14px 圆角 / 无边框 / bg-primary 纸面），列表行为无边框 inset。
  * ============================================================ */
 
 .panel {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: clamp(16px, 2vw, 20px);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: var(--bg-primary);
 }
 
 .panelHead {
@@ -26,7 +25,7 @@
 .panelTitle {
   margin: 0;
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text-primary);
 }
@@ -52,9 +51,30 @@
   align-items: center;
   gap: 2px;
   padding: 2px;
-  border-radius: $radius-md;
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  border-radius: $radius-full;
+  background: var(--bg-tertiary);
+
+  :global(.btn) {
+    padding: 5px 13px;
+    border: 0;
+    background: transparent;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  :global(.btn[aria-pressed='true']) {
+    background: var(--bg-primary);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  :global([data-theme='white']) & {
+    background: var(--border-color);
+
+    :global(.btn[aria-pressed='true']) {
+      background: var(--bg-tertiary);
+    }
+  }
 }
 
 /* ---------- provider 行 ---------- */
@@ -70,19 +90,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
-  background: color-mix(in srgb, var(--bg-secondary) 45%, transparent);
-  transition:
-    background-color $transition-fast,
-    border-color $transition-fast;
+  background: var(--bg-tertiary);
+  transition: background-color 0.15s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .item:hover {
-    border-color: var(--border-hover);
-    background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+    background: var(--bg-hover);
   }
 }
 
@@ -94,9 +110,8 @@
 }
 
 .itemProvider {
-  font-family: $font-mono;
-  font-size: 12.5px;
-  font-weight: 650;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text-primary);
   @include text-ellipsis;
 }
@@ -131,10 +146,9 @@
 
 .aliasChartTitle {
   margin: 0;
-  font-family: $font-mono;
   font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -149,7 +163,6 @@
   transition:
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
     background-color $transition-fast,
-    border-color $transition-fast,
     color $transition-fast;
 }
 

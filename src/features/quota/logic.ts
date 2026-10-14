@@ -4,6 +4,8 @@
  */
 
 import type { AuthFileItem } from '@/types';
+import { isDisabledAuthFile } from '@/utils/quota';
+import { getAuthFileStatusMessage } from '@/features/authFiles/constants';
 import { ANTIGRAVITY_CONFIG } from './providers/antigravity/data';
 import { CLAUDE_CONFIG } from './providers/claude/data';
 import { CODEX_CONFIG } from './providers/codex/data';
@@ -52,18 +54,33 @@ export const resolveQuotaProviderType = (file: AuthFileItem): QuotaProviderType 
 /**
  * 把文件列表归类为额度条目：不支持额度或已停用的文件被过滤，
  * 结果按 QUOTA_TAB_ORDER 分组排列（'全部' tab 的卡片顺序即由此决定）。
+ * includeDisabled keeps paused credentials, typed as if enabled, so the overview
+ * can show them with a switch to turn them back on.
  */
-export function classifyQuotaFiles(files: AuthFileItem[]): QuotaFileEntry[] {
+export function classifyQuotaFiles(
+  files: AuthFileItem[],
+  { includeDisabled = false }: { includeDisabled?: boolean } = {}
+): QuotaFileEntry[] {
   const groups = new Map<QuotaProviderType, QuotaFileEntry[]>(
     QUOTA_TAB_ORDER.map((type) => [type, []])
   );
   for (const file of files) {
-    const type = resolveQuotaProviderType(file);
+    const type = resolveQuotaProviderType(
+      includeDisabled && isDisabledAuthFile(file) ? { ...file, disabled: false } : file
+    );
     if (!type) continue;
     groups.get(type)?.push({ file, type });
   }
   return QUOTA_TAB_ORDER.flatMap((type) => groups.get(type) ?? []);
 }
+
+/**
+ * The server switched this credential off because its token can no longer refresh
+ * ("disabled (invalid grant)"); only a new login in Auth Files revives it. A credential
+ * the user paused reads "disabled via management API" instead, so it isn't caught here.
+ */
+export const needsRelogin = (file: AuthFileItem): boolean =>
+  isDisabledAuthFile(file) && /invalid[ _]grant/i.test(getAuthFileStatusMessage(file));
 
 export function filterEntriesByTab(entries: QuotaFileEntry[], tab: QuotaTabId): QuotaFileEntry[] {
   if (tab === 'all') return entries;

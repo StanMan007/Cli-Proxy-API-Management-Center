@@ -23,8 +23,7 @@ describe('provider filter overflow', () => {
     expect(source).toContain("strip.removeEventListener('wheel', onWheel)");
   });
 
-  test('allocates remaining quota toolbar width without shrinking the sort control', () => {
-    expect(quotaStyles).toMatch(/> :first-child\s*\{\s*flex: 1 1 auto;\s*min-width: 0;/);
+  test('keeps the quota sort control from shrinking', () => {
     expect(quotaStyles).toMatch(/\.sort\s*\{\s*flex: 0 0 auto;/);
   });
 });

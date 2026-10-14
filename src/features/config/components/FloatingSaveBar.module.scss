@@ -1,6 +1,6 @@
 @use '../../../styles/mixins' as *;
 
-/* 悬浮保存栏：底部居中的玻璃工具栏（--content-center-x 对齐内容列中心） */
+/* 悬浮保存栏：底部居中的浮层工具栏（--content-center-x 对齐内容列中心） */
 
 .container {
   position: fixed;
@@ -21,11 +21,8 @@
   gap: 8px 16px;
   padding: 10px 14px;
   border-radius: 16px;
-  --glass-blur: 14px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-backdrop-filter);
-  box-shadow: var(--shadow-lg);
+  background: var(--floating-surface, var(--bg-primary));
+  box-shadow: var(--floating-shadow);
 }
 
 /* 状态文案：mono 遥测 */

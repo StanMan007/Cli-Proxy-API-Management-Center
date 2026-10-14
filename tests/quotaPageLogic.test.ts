@@ -7,6 +7,7 @@ import {
   filterEntriesByTab,
   filterEntriesBySearch,
   isQuotaRefreshDisabled,
+  needsRelogin,
   paginate,
   resolveQuotaProviderType,
   sortQuotaEntries,
@@ -63,9 +64,34 @@ describe('classifyQuotaFiles', () => {
     expect(entries).toHaveLength(5);
   });
 
+  test('keeps paused files, still flagged disabled, when asked', () => {
+    const paused = classifyQuotaFiles(FILES, { includeDisabled: true }).find(
+      (entry) => entry.file.name === 'claude-off.json'
+    );
+    expect(paused).toMatchObject({ type: 'claude', file: { disabled: true } });
+  });
+
   test('orders entries by provider tab order', () => {
     const entries = classifyQuotaFiles(FILES);
     expect(entries.map((entry) => entry.type)).toEqual(['claude', 'codex', 'codex', 'xai', 'kimi']);
+  });
+});
+
+describe('needsRelogin', () => {
+  test('catches only credentials the server retired for an invalid grant', () => {
+    const off = { disabled: true, status: 'disabled' };
+    expect(
+      needsRelogin(file('dead', 'claude', { ...off, status_message: 'disabled (invalid grant)' }))
+    ).toBe(true);
+    // Paused from the panel, or paused with nothing recorded: still worth showing.
+    expect(
+      needsRelogin(
+        file('paused', 'codex', { ...off, status_message: 'disabled via management API' })
+      )
+    ).toBe(false);
+    expect(needsRelogin(file('quiet', 'codex', off))).toBe(false);
+    // In rotation but failing: the user should see it.
+    expect(needsRelogin(file('live', 'codex', { status_message: 'invalid_grant' }))).toBe(false);
   });
 });
 

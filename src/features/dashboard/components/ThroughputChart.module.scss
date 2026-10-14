@@ -27,7 +27,8 @@
 }
 
 .legendValue {
-  font-weight: 650;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -94,10 +95,10 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: var(--border-color);
+  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
 
   &:last-child {
-    background: var(--border-primary);
+    background: var(--bg-tertiary);
   }
 }
 
@@ -181,7 +182,7 @@
   width: 100%;
   height: 2px;
   border-radius: $radius-full;
-  background: var(--border-primary);
+  background: var(--bg-hover);
 }
 
 /* bottom 由 TSX 按柱高写入；柱子全部落定后再淡入 */
@@ -191,7 +192,7 @@
   transform: translateX(-50%);
   margin-bottom: 6px;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -217,8 +218,6 @@
 /* ---------- 悬浮提示 ---------- */
 
 .tooltip {
-  --glass-blur: 10px;
-
   position: absolute;
   top: 4px;
   z-index: 2;
@@ -227,12 +226,9 @@
   gap: 3px;
   padding: $spacing-sm $spacing-md;
   min-width: 132px;
-  border-radius: $radius-md;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-backdrop-filter);
-  -webkit-backdrop-filter: var(--glass-backdrop-filter);
-  box-shadow: var(--shadow-lg);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  box-shadow: var(--floating-shadow);
   font-size: 12px;
   color: var(--text-secondary);
   pointer-events: none;
@@ -252,7 +248,7 @@
 }
 
 .tooltipTime {
-  font-weight: 650;
+  font-weight: 600;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -271,8 +267,6 @@
 
 .tooltipRate {
   margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px solid var(--border-color);
   color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
 }
@@ -312,15 +306,25 @@
 
   th,
   td {
-    padding: 5px $spacing-sm;
+    padding: 6px $spacing-sm;
     text-align: right;
-    border-bottom: 1px solid var(--border-color);
     color: var(--text-secondary);
   }
 
+  tbody tr {
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+  }
+
   thead th {
-    color: var(--text-tertiary);
+    font-size: 10.5px;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
     white-space: nowrap;
   }
 
@@ -338,9 +342,8 @@
   flex-direction: column;
   gap: $spacing-xs;
   padding: $spacing-xl;
-  border-radius: $radius-lg;
-  border: 1px dashed var(--border-primary);
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   text-align: center;
 }
 

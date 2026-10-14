@@ -3,10 +3,8 @@
 
 .panel {
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 20px;
+  border-radius: 14px;
+  padding: 20px 22px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -27,11 +25,11 @@
   min-width: 0;
   max-width: 100%;
   height: 30px;
-  padding: 0 8px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  padding: 0 10px;
+  border: none;
+  border-radius: $radius-full;
   background: transparent;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 600;
   line-height: 1;
@@ -42,13 +40,13 @@
     color $transition-fast;
 
   &:hover {
-    background: var(--bg-hover);
+    background: var(--bg-tertiary);
     color: var(--text-primary);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   svg {
@@ -67,7 +65,7 @@
 .logo {
   width: 30px;
   height: 30px;
-  border-radius: var(--radius-md);
+  border-radius: 7px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -85,7 +83,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.22;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 .footer {
@@ -97,12 +95,12 @@
 }
 
 .empty {
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 32px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  padding: 36px 32px;
   text-align: center;
-  color: var(--muted-foreground);
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 13.5px;
 }
 
 .emptyActions {
@@ -118,30 +116,27 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 13px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  border: none;
+  border-radius: $radius-full;
   background: var(--bg-primary);
   color: var(--text-primary);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
   line-height: 1.4;
   text-decoration: none;
   transition:
-    background 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease,
-    box-shadow 0.16s ease;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--border-hover);
     background: var(--bg-hover);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -150,37 +145,22 @@
   }
 }
 
+// Ink pill, matching the global .btn-primary.
 .emptyActionButtonPrimary {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
-  color: var(--primary-contrast);
-  font-weight: 600;
+  background: var(--text-primary);
+  color: var(--bg-secondary);
 
   &:hover:not(:disabled) {
-    border-color: var(--primary-hover);
-    background: var(--primary-hover);
-  }
-
-  &:focus-visible {
-    outline-color: var(--primary-color);
+    background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
   }
 }
 
 .emptyActionButtonEmphasis {
   color: var(--amber-text);
-  border-color: color-mix(in srgb, var(--amber-color) 48%, var(--border-color));
   background: color-mix(in srgb, var(--amber-color) 14%, var(--bg-primary));
-  font-weight: 600;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--amber-color) 18%, transparent);
 
   &:hover {
-    border-color: color-mix(in srgb, var(--amber-color) 72%, var(--border-color));
     background: color-mix(in srgb, var(--amber-color) 20%, var(--bg-primary));
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--amber-color) 18%, transparent);
-  }
-
-  &:focus-visible {
-    outline-color: var(--amber-color);
   }
 }
 

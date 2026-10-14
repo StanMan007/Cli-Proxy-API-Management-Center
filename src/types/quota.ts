@@ -218,6 +218,8 @@ export interface ClaudeQuotaState {
   observedAt?: string | null;
   stale?: boolean;
   planType?: string | null;
+  /** When the subscription began; its monthly anniversary estimates the renewal date. */
+  subscriptionCreatedAt?: string | null;
   error?: string;
   errorStatus?: number;
 }

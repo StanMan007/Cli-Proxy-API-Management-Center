@@ -61,13 +61,12 @@
   width: 30px;
   height: 30px;
   border-radius: $radius-full;
-  border: 1px solid var(--text-primary);
+  border: 0;
   background: var(--text-primary);
   color: var(--bg-secondary);
   transition:
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
     background-color $transition-fast,
-    border-color $transition-fast,
     opacity $transition-fast;
 
   &:active:not(:disabled) {
@@ -83,7 +82,6 @@
 @media (hover: hover) and (pointer: fine) {
   .searchButton:hover:not(:disabled) {
     background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
-    border-color: transparent;
   }
 }
 
@@ -101,13 +99,12 @@
   }
 }
 
-/* ---------- 编辑器面板 ---------- */
+/* ---------- 编辑器面板：无边框的 --bg-primary 面板，行号栏不画分隔线 ---------- */
 
 .editorWrapper {
   width: 100%;
   flex: 0 0 auto;
   height: clamp(500px, 70vh, 1040px);
-  border: 1px solid var(--border-color);
   border-radius: 14px;
   overflow: hidden;
   background: var(--bg-primary);
@@ -131,13 +128,17 @@
       overscroll-behavior: contain;
     }
 
+    .cm-content {
+      padding: 14px 0;
+    }
+
     .cm-gutters {
-      border-right: 1px solid var(--border-color);
-      background: color-mix(in srgb, var(--bg-secondary) 86%, transparent);
+      border-right: 0;
+      background: transparent;
     }
 
     .cm-lineNumbers .cm-gutterElement {
-      padding: 0 8px 0 12px;
+      padding: 0 14px 0 16px;
       min-width: 40px;
       color: var(--text-muted);
     }

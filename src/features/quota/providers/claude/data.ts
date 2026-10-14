@@ -38,6 +38,8 @@ export type ClaudeQuotaData = {
   windows: ClaudeQuotaWindow[];
   extraUsage?: ClaudeExtraUsage | null;
   planType?: string | null;
+  /** When the subscription began; its monthly anniversary estimates the renewal date. */
+  subscriptionCreatedAt?: string | null;
   dollarWindows: ClaudeDollarWindow[];
   observedAt: string;
 };
@@ -253,13 +255,11 @@ const fetchClaudeQuota = async (file: AuthFileItem, t: TFunction): Promise<Claud
       window.id !== 'cloud-session-credits' ||
       !dollarWindows.some((balance) => balance.key === 'iguana_necktie')
   );
-  const planType =
+  const profile =
     profileResult.status === 'fulfilled' &&
     profileResult.value.statusCode >= 200 &&
     profileResult.value.statusCode < 300
-      ? resolveClaudePlanType(
-          parseClaudeProfilePayload(profileResult.value.body ?? profileResult.value.bodyText)
-        )
+      ? parseClaudeProfilePayload(profileResult.value.body ?? profileResult.value.bodyText)
       : null;
 
   return {
@@ -267,7 +267,8 @@ const fetchClaudeQuota = async (file: AuthFileItem, t: TFunction): Promise<Claud
     extraUsage: snapshot.extraUsage,
     dollarWindows,
     observedAt: new Date().toISOString(),
-    planType,
+    planType: resolveClaudePlanType(profile),
+    subscriptionCreatedAt: normalizeStringValue(profile?.organization?.subscription_created_at),
   };
 };
 
@@ -284,6 +285,7 @@ export const CLAUDE_CONFIG: QuotaProviderData<ClaudeQuotaState, ClaudeQuotaData>
     windows: data.windows,
     extraUsage: data.extraUsage,
     planType: data.planType,
+    subscriptionCreatedAt: data.subscriptionCreatedAt,
     dollarWindows: data.dollarWindows,
     observedAt: data.observedAt,
     stale: false,

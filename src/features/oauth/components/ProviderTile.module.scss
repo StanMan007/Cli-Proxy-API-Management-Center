@@ -1,7 +1,7 @@
 @use '../../../styles/mixins' as *;
 
 /* ============================================================
- * 提供商磁贴 — 凭证卡/额度卡同一配方（14px 圆角 / 1px 边框 / 82% 透感纸面）。
+ * 提供商磁贴 — 凭证卡/额度卡同一配方（14px 圆角 / 无边框 / bg-primary 纸面）。
  * 品牌身份只由图标承载；状态走副行文字 + 小圆点（颜色只是辅助通道）。
  * ============================================================ */
 
@@ -12,14 +12,13 @@
   align-items: center;
   gap: 12px;
   min-height: 66px;
-  padding: 12px 14px 12px 12px;
+  padding: 14px 16px 14px 14px;
   border-radius: 14px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+  background: var(--bg-primary);
   transition:
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
   /* backwards：只在延迟期间持有起始帧，结束后不压住 hover/press 的 transform */
   animation: oauth-tile-in 0.45s var(--ease-out-strong, ease-out) backwards;
   animation-delay: var(--tile-delay, 0ms);
@@ -36,9 +35,9 @@
   }
 }
 
-/* 进行中的磁贴边框略加深：扫一眼就能找到「还没完成」的那个 */
+/* 进行中的磁贴套一圈安静的环：扫一眼就能找到「还没完成」的那个 */
 .tile[data-status='waiting'] {
-  border-color: color-mix(in srgb, var(--text-primary) 24%, var(--border-color));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
 }
 
 /* ---------- 图标 ---------- */
@@ -50,7 +49,7 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   flex-shrink: 0;
 }
@@ -96,8 +95,7 @@
   }
 
   &:focus-visible::after {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -106,11 +104,9 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
-  font-family: $font-mono;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.02em;
   color: var(--text-tertiary);
   white-space: nowrap;
 }
@@ -169,24 +165,20 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
   color: var(--text-tertiary);
   transition:
     background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
     color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .tile:hover {
-    transform: translateY(-1px);
-    border-color: var(--border-hover);
-    box-shadow: 0 12px 26px -16px rgb(0 0 0 / 0.18);
+    background: var(--bg-hover);
   }
 
   .tile:hover .trail {
     background: var(--text-primary);
-    border-color: var(--text-primary);
     color: var(--bg-secondary);
   }
 
@@ -199,8 +191,8 @@
   .tile {
     animation: none;
     transition:
-      border-color var(--dur-hover, 200ms) ease,
-      box-shadow var(--dur-hover, 200ms) ease;
+      background-color 0.15s ease,
+      box-shadow 0.15s ease;
   }
 
   .tile:active,

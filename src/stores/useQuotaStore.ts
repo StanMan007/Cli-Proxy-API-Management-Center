@@ -85,6 +85,7 @@ export const useQuotaStore = create<QuotaStoreState>((set) => ({
             dollarWindows: previous.dollarWindows,
             observedAt: previous.observedAt,
             planType: previous.planType,
+            subscriptionCreatedAt: previous.subscriptionCreatedAt,
             stale: quota.status === 'error' || previous.stale,
           };
         }

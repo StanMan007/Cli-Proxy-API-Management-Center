@@ -51,13 +51,13 @@
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 6px 10px;
+  border-radius: 8px;
+  padding: 7px 11px;
   font-size: 12px;
   line-height: 1.5;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-variant-numeric: tabular-nums;
+  box-shadow: var(--floating-shadow);
   z-index: $z-dropdown;
   pointer-events: none;
   color: var(--text-primary);
@@ -79,7 +79,6 @@
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: var(--border-color);
   }
 }
 
@@ -140,8 +139,8 @@
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: $radius-full;
   background: var(--bg-tertiary);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;

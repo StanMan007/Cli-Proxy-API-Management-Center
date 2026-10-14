@@ -52,7 +52,7 @@
     linear-gradient(to right, var(--border-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
   background-size: 72px 72px;
-  opacity: 0.24;
+  opacity: 0.14;
   /* 同样从顶端 0 淡入（intersect 取两层交集），避免网格在裁切线处满强度起步 */
   mask-image:
     linear-gradient(to bottom, transparent, #000 48px),
@@ -107,10 +107,10 @@
 /* 判词标题：文案来自实时状态，短，所以敢放大 */
 .heroTitle {
   margin: 0;
-  font-size: clamp(44px, 6.2vw, 80px);
-  line-height: 1.05;
+  font-size: clamp(26px, 3.2vw, 30px);
+  line-height: 1.15;
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   text-wrap: balance;
 }
@@ -159,10 +159,8 @@
   text-decoration: none;
   transition:
     transform var(--dur-press) var(--ease-out-strong),
-    background-color $transition-fast,
-    border-color $transition-fast,
-    box-shadow var(--dur-hover) var(--ease-out-strong),
-    color $transition-fast;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   /* 按下即回应：不等 click，指针落下就缩 */
   &:active {
@@ -182,26 +180,11 @@
 .primaryAction {
   background: var(--text-primary);
   color: var(--bg-secondary);
-  border: 1px solid transparent;
+  border: none;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      transform: translateY(-1px);
       background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
-      box-shadow: 0 12px 26px color-mix(in srgb, var(--text-primary) 22%, transparent);
-    }
-  }
-
-  /* 悬停态下按压：抬升让位于回缩 */
-  &:active {
-    transform: translateY(0) scale(0.97);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        transform: none;
-      }
     }
   }
 }
@@ -239,24 +222,14 @@
 
 /* Hero 数字仪表卡 —— 悬浮在脉搏线之上的玻璃面板 */
 .heroPanel {
-  --glass-blur: 14px;
-
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: $spacing-xs;
-  padding: clamp($spacing-lg, 2.5vw, 28px);
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--bg-primary) 90%, transparent),
-    color-mix(in srgb, var(--bg-secondary) 74%, transparent)
-  );
-  backdrop-filter: var(--glass-backdrop-filter);
-  -webkit-backdrop-filter: var(--glass-backdrop-filter);
-  box-shadow: var(--shadow-lg);
+  gap: 8px;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: var(--bg-primary);
 }
 
 .heroPanelTop {
@@ -267,10 +240,9 @@
 }
 
 .heroPanelLabel {
-  font-family: $font-mono;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -279,14 +251,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 9px;
-  border-radius: $radius-full;
-  border: 1px solid color-mix(in srgb, var(--viz-success) 35%, transparent);
-  background: color-mix(in srgb, var(--viz-success) 8%, transparent);
-  font-family: $font-mono;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--viz-success) 12%, transparent);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--success-badge-text);
 }
@@ -305,18 +275,16 @@
 
 /* 遥测数字统一等宽：这是 CLI 代理，mono 是它的母语 */
 .heroFigure {
-  font-family: $font-mono;
-  font-size: clamp(42px, 5.6vw, 62px);
-  line-height: 1.05;
-  font-weight: 600;
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .heroPanelMeta {
-  font-family: $font-mono;
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-secondary);
 }
 
@@ -338,8 +306,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-md;
-  padding-top: $spacing-sm;
-  border-top: 1px solid var(--border-color);
+  padding-top: 4px;
   font-size: 12px;
   color: var(--text-secondary);
 }
@@ -350,7 +317,7 @@
   gap: 6px;
 
   b {
-    font-family: $font-mono;
+    font-weight: 600;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
   }
@@ -392,47 +359,34 @@
 .statTile {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: $spacing-lg;
+  gap: 8px;
+  padding: 18px 22px;
   border-radius: 14px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
-  transition: border-color $transition-fast;
+  background: var(--bg-primary);
 
   /* 左上角色签：语义色调由 --tile-accent 注入 */
   &::before {
     content: '';
-    width: 28px;
+    width: 22px;
     height: 3px;
-    margin-bottom: 2px;
-    border-radius: $radius-full;
-    background: var(--tile-accent, var(--border-hover));
-  }
-
-  /* 卡片不可点击，因此不抬升不投影——悬停只轻描边框辅助聚焦 */
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      border-color: var(--border-hover);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
+    border-radius: 999px;
+    background: var(--tile-accent, var(--text-quaternary));
   }
 }
 
 .statLabel {
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
 .statValue {
-  font-family: $font-mono;
-  font-size: 28px;
-  line-height: 1.1;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -442,7 +396,7 @@
 }
 
 .statHint {
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.45;
   color: var(--text-tertiary);
 }
@@ -468,26 +422,26 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-family: $font-mono;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 
   &::before {
-    content: '▍';
-    color: var(--viz-success);
-    font-size: 12px;
-    line-height: 1;
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--viz-success);
   }
 }
 
 .sectionTitle {
   margin: 0;
-  font-size: clamp(22px, 2.6vw, 30px);
-  line-height: 1.18;
-  font-weight: 650;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   text-wrap: balance;
@@ -496,8 +450,8 @@
 .sectionDescription {
   margin: 0;
   max-width: 64ch;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13.5px;
+  line-height: 1.55;
   color: var(--text-secondary);
 }
 
@@ -505,10 +459,9 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  padding: clamp($spacing-lg, 2.4vw, 28px);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: var(--bg-primary);
 }
 
 .panelHead {
@@ -519,9 +472,8 @@
 
 .panelTitle {
   margin: 0;
-  font-size: 18px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -556,10 +508,11 @@
 
 .fleetList {
   list-style: none;
-  margin: 0;
+  margin: 0 -12px;
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .fleetRow {
@@ -567,11 +520,12 @@
   grid-template-columns: auto minmax(0, 1.3fr) minmax(80px, 1fr) auto minmax(96px, 0.7fr);
   align-items: center;
   gap: $spacing-md;
-  padding: $spacing-md 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
 
-  &:last-child {
-    border-bottom: none;
+  &:hover {
+    background: var(--bg-tertiary);
   }
 
   @media (max-width: 760px) {
@@ -629,15 +583,18 @@
 }
 
 .fleetTotal {
-  font-family: $font-mono;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .fleetTotalLabel {
-  font-size: 11px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--text-tertiary);
 }
 
@@ -716,7 +673,7 @@
   }
 
   b {
-    font-family: $font-mono;
+    font-weight: 600;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
   }
@@ -733,14 +690,13 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-sm;
-  padding-top: $spacing-md;
-  border-top: 1px solid var(--border-color);
+  padding-top: $spacing-xs;
 }
 
 .typeBreakdownLabel {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -758,15 +714,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
-  border-radius: $radius-full;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-tertiary);
   font-size: 12px;
   color: var(--text-secondary);
 
   b {
-    font-family: $font-mono;
+    font-weight: 600;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
   }
@@ -775,7 +730,7 @@
 /* ---------- 运行参数表 ---------- */
 
 .specList {
-  margin: 0;
+  margin: 0 -12px;
   display: flex;
   flex-direction: column;
 }
@@ -785,11 +740,12 @@
   align-items: baseline;
   justify-content: space-between;
   gap: $spacing-md;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 9px 12px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
 
-  &:last-child {
-    border-bottom: none;
+  &:hover {
+    background: var(--bg-tertiary);
   }
 }
 
@@ -828,20 +784,18 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 10px;
-  border-radius: $radius-full;
-  border: 1px solid var(--border-color);
+  padding: 4px 10px;
+  border-radius: 999px;
   font-size: 12px;
   color: var(--text-secondary);
 
   b {
-    font-weight: 650;
+    font-weight: 600;
   }
 }
 
 .toggleOn {
-  border-color: color-mix(in srgb, var(--viz-success) 40%, transparent);
-  background: color-mix(in srgb, var(--viz-success) 10%, transparent);
+  background: color-mix(in srgb, var(--viz-success) 12%, transparent);
 
   b {
     color: var(--success-badge-text);
@@ -849,7 +803,7 @@
 }
 
 .toggleOff {
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  background: var(--bg-tertiary);
 
   b {
     color: var(--text-tertiary);
@@ -877,22 +831,18 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: $spacing-lg;
+  padding: 18px 22px;
   border-radius: 14px;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 76%, transparent);
+  background: var(--bg-primary);
   text-decoration: none;
   overflow: hidden;
   transition:
     transform var(--dur-press) var(--ease-out-strong),
-    border-color $transition-fast,
-    box-shadow var(--dur-hover) var(--ease-out-strong);
+    background-color 0.15s ease;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      transform: translateY(-2px);
-      border-color: var(--border-hover);
-      box-shadow: 0 14px 30px rgb(0 0 0 / 0.12);
+      background: var(--bg-tertiary);
 
       .ctaArrow {
         transform: translateX(3px);
@@ -915,8 +865,6 @@
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        transform: none;
-
         .ctaArrow {
           transform: none;
         }
@@ -932,15 +880,14 @@
   width: 36px;
   height: 36px;
   margin-bottom: $spacing-xs;
-  border-radius: $radius-md;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
 }
 
 .ctaTitle {
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -952,8 +899,8 @@
 
 .ctaArrow {
   position: absolute;
-  top: $spacing-lg;
-  right: $spacing-lg;
+  top: 18px;
+  right: 22px;
   font-size: 15px;
   color: var(--text-tertiary);
   opacity: 0.55;

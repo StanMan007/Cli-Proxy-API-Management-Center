@@ -7,33 +7,32 @@
   justify-content: center;
   gap: $spacing-sm;
   border: 1px solid transparent;
-  border-radius: $radius-md;
-  padding: 10px 14px;
+  border-radius: $radius-full;
+  padding: 9px 16px;
+  font-size: 13.5px;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
   transition: all $transition-fast;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-tertiary);
   color: var(--text-primary);
 
+  // Ink pill, as on the quota page: the brightest thing on a dark page.
   &.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--primary-contrast, #fff);
-    border-color: var(--primary-color);
+    background-color: var(--text-primary);
+    color: var(--bg-secondary);
 
-    &:hover {
-      background-color: var(--primary-hover);
-      border-color: var(--primary-hover);
+    &:hover:not(:disabled) {
+      background-color: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
     }
   }
 
   &.btn-secondary {
     background-color: var(--bg-tertiary);
-    border-color: var(--border-color);
     color: var(--text-primary);
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--bg-hover, var(--bg-tertiary));
-      border-color: var(--border-hover);
     }
   }
 
@@ -63,8 +62,8 @@
   }
 
   &.btn-sm {
-    padding: 8px 10px;
-    font-size: 14px;
+    padding: 6px 12px;
+    font-size: 12.5px;
   }
 
   &:disabled {
@@ -73,33 +72,29 @@
   }
 }
 
-[data-theme='dark'] {
-  .btn {
-    color: #fff;
-  }
-
-  .btn.btn-secondary,
-  .btn.btn-ghost {
-    color: #fff;
-  }
-}
-
 .input,
 textarea {
   width: 100%;
-  border: 1px solid var(--border-color);
+  border: 1px solid transparent;
   border-radius: $radius-md;
   padding: 10px 12px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-tertiary);
   color: var(--text-primary);
   transition:
-    border-color $transition-fast,
+    background-color $transition-fast,
     box-shadow $transition-fast;
+
+  &::placeholder {
+    color: var(--text-quaternary);
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    background-color: var(--bg-hover);
+  }
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.18);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -110,6 +105,7 @@ textarea {
   margin-bottom: $spacing-md;
 
   label {
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
   }
@@ -122,10 +118,8 @@ textarea {
 
 .card {
   background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: $radius-lg;
-  box-shadow: var(--shadow);
-  padding: $spacing-lg;
+  border-radius: 14px;
+  padding: 20px 22px;
 }
 
 .card-header {
@@ -143,8 +137,8 @@ textarea {
   .title {
     flex: 1 1 auto;
     min-width: 0;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 600;
     color: var(--text-primary);
   }
 }
@@ -155,8 +149,8 @@ textarea {
   gap: 6px;
   padding: 4px 10px;
   border-radius: $radius-full;
-  font-size: 13px;
-  border: 1px solid var(--border-color);
+  font-size: 12.5px;
+  background: var(--bg-tertiary);
   margin-bottom: $spacing-md;
 
   // 确保后续内容换行显示
@@ -166,20 +160,17 @@ textarea {
 
   &.success {
     color: $success-color;
-    border-color: rgba($success-color, 0.35);
-    background: rgba($success-color, 0.08);
+    background: rgba($success-color, 0.12);
   }
 
   &.warning {
     color: $warning-color;
-    border-color: rgba($warning-color, 0.35);
-    background: rgba($warning-color, 0.08);
+    background: rgba($warning-color, 0.12);
   }
 
   &.error {
     color: $error-color;
-    border-color: rgba($error-color, 0.35);
-    background: rgba($error-color, 0.08);
+    background: rgba($error-color, 0.12);
   }
 
   &.muted {
@@ -190,9 +181,8 @@ textarea {
 .pill {
   padding: 4px 10px;
   border-radius: $radius-full;
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
-  border: 1px solid var(--border-color);
   font-size: 12px;
 }
 
@@ -261,9 +251,8 @@ textarea {
 
 .modal {
   background: var(--bg-primary);
-  border-radius: $radius-lg;
-  border: 1px solid var(--border-color);
-  box-shadow: $shadow-lg;
+  border-radius: 16px;
+  box-shadow: var(--floating-shadow);
   max-width: 100%;
   max-height: 90vh;
   overflow: hidden;
@@ -311,8 +300,8 @@ textarea {
   width: 32px;
   height: 32px;
   padding: 0;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  border: none;
   color: var(--text-secondary);
   cursor: pointer;
   border-radius: $radius-full;
@@ -331,7 +320,7 @@ textarea {
 
   &:hover {
     color: var(--text-primary);
-    background: var(--bg-tertiary);
+    background: var(--bg-hover);
     transform: scale(1.1);
   }
 
@@ -347,7 +336,7 @@ textarea {
 
   &:disabled:hover {
     color: var(--text-secondary);
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
     transform: none;
   }
 }
@@ -355,12 +344,12 @@ textarea {
 .modal-header {
   display: flex;
   align-items: center;
-  padding: $spacing-md $spacing-lg;
-  border-bottom: 1px solid var(--border-color);
+  padding: 20px $spacing-lg 4px;
 
   .modal-title {
     font-weight: 700;
     font-size: 18px;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
   }
 }
@@ -372,8 +361,7 @@ textarea {
 }
 
 .modal-footer {
-  padding: $spacing-md $spacing-lg;
-  border-top: 1px solid var(--border-color);
+  padding: $spacing-md $spacing-lg 20px;
   display: flex;
   justify-content: flex-end;
   gap: $spacing-sm;
@@ -435,10 +423,9 @@ textarea {
 }
 
 .empty-state {
-  border: 1px dashed var(--border-color);
-  border-radius: $radius-lg;
+  border-radius: 14px;
   padding: $spacing-lg;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   display: flex;
   justify-content: space-between;
   gap: $spacing-md;
@@ -455,7 +442,7 @@ textarea {
     height: 42px;
     flex: 0 0 42px;
     border-radius: $radius-full;
-    border: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -497,13 +484,12 @@ textarea {
 .item-list {
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: 6px;
 }
 
 .item-row {
-  border: 1px solid var(--border-color);
   border-radius: $radius-md;
-  padding: $spacing-md;
+  padding: 12px 14px;
   background: var(--bg-primary);
   display: flex;
   align-items: center;
@@ -537,8 +523,7 @@ textarea {
 }
 
 .error-box {
-  background: rgba($error-color, 0.1);
-  border: 1px solid rgba($error-color, 0.4);
+  background: rgba($error-color, 0.12);
   border-radius: $radius-md;
   padding: $spacing-sm $spacing-md;
   color: $error-color;

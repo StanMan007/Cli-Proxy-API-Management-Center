@@ -29,9 +29,8 @@ $diff-hunk-color: #388bfd;
 
 .emptyState {
   flex: 1;
-  border: 1px dashed var(--border-color);
-  border-radius: $radius-md;
-  background: var(--bg-secondary);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   font-size: 14px;
   display: grid;
@@ -56,8 +55,7 @@ $diff-hunk-color: #388bfd;
   align-items: center;
   gap: $spacing-sm;
   padding: 10px $spacing-md;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
   flex-shrink: 0;
 }
 
@@ -124,15 +122,15 @@ $diff-hunk-color: #388bfd;
 
 // ── Hunk ────────────────────────────────────────────────
 
+// 相邻 hunk 之间留一道细缝，而不是画分隔线。
 .hunk + .hunk {
-  border-top: 1px solid var(--border-color);
+  margin-top: 6px;
 }
 
 .hunkHeader {
   display: flex;
   align-items: center;
   background: color-mix(in srgb, $diff-hunk-color 8%, var(--bg-primary));
-  border-bottom: 1px solid color-mix(in srgb, $diff-hunk-color 12%, var(--border-color));
   color: color-mix(in srgb, $diff-hunk-color 75%, var(--text-secondary));
   min-height: $diff-line-height;
 }
@@ -144,7 +142,7 @@ $diff-hunk-color: #388bfd;
   align-items: center;
   justify-content: center;
   align-self: stretch;
-  border-right: 1px solid color-mix(in srgb, $diff-hunk-color 12%, var(--border-color));
+  background: color-mix(in srgb, $diff-hunk-color 12%, var(--bg-primary));
 }
 
 .hunkExpandIcon {
@@ -175,7 +173,6 @@ $diff-hunk-color: #388bfd;
   color: var(--text-tertiary);
   user-select: none;
   font-variant-numeric: tabular-nums;
-  border-right: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
   box-sizing: border-box;
 }
 
@@ -224,7 +221,6 @@ $diff-hunk-color: #388bfd;
 
   .lineNum {
     background: color-mix(in srgb, $diff-del-color 12%, var(--bg-primary));
-    border-right-color: color-mix(in srgb, $diff-del-color 18%, var(--border-color));
     color: color-mix(in srgb, $diff-del-color 60%, var(--text-tertiary));
   }
 
@@ -244,7 +240,6 @@ $diff-hunk-color: #388bfd;
 
   .lineNum {
     background: color-mix(in srgb, $diff-add-color 12%, var(--bg-primary));
-    border-right-color: color-mix(in srgb, $diff-add-color 18%, var(--border-color));
     color: color-mix(in srgb, $diff-add-color 60%, var(--text-tertiary));
   }
 
