@@ -12,7 +12,6 @@
   gap: 8px;
   padding: $spacing-sm 0 $spacing-md;
   text-align: center;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .logoBox {
@@ -23,8 +22,7 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
 
   img {
@@ -38,6 +36,7 @@
   margin: 0;
   font-size: 20px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   overflow-wrap: anywhere;
 }
@@ -81,9 +80,9 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--focus-ring-color, var(--accent-color));
-    outline-offset: 3px;
+    outline: none;
     border-radius: $radius-sm;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -100,10 +99,9 @@
   align-items: center;
   gap: $spacing-sm;
   margin-top: $spacing-lg;
-  padding: 12px 14px;
-  border-radius: $radius-md;
-  border: 1px solid color-mix(in srgb, var(--quota-medium-color, #e0aa14) 45%, var(--border-color));
-  background: color-mix(in srgb, var(--quota-medium-color, #e0aa14) 16%, var(--bg-secondary));
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--quota-medium-color, #e0aa14) 12%, transparent);
   color: var(--text-primary);
   font-weight: 600;
   font-size: 14px;
@@ -117,8 +115,9 @@
 
 .effects {
   margin: $spacing-md 0 0;
-  padding-left: $spacing-md;
-  border-left: 2px solid var(--border-color);
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -146,10 +145,9 @@
 
 .untrustedAlert {
   margin-top: $spacing-lg;
-  padding: 12px 14px;
-  border-radius: $radius-md;
-  border: 1px solid rgba($warning-color, 0.35);
-  background: rgba($warning-color, 0.1);
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba($warning-color, 0.12);
 }
 
 .untrustedText {
@@ -167,9 +165,12 @@
   margin: 10px 0 0;
 
   dt {
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 600;
-    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    color: var(--text-tertiary);
   }
 
   dd {

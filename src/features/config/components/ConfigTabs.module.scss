@@ -1,6 +1,7 @@
 @use '../../../styles/mixins' as *;
 
-/* 分区 tabs：安静的下划线式（种子自提供商 tabs），加错误徽章与脏点两个状态通道 */
+/* 分区 tabs：与配额页同语汇的 segmented 胶囊（嵌入底色 + 激活段面板底），
+   加错误徽章与脏点两个状态通道 */
 
 .tabs {
   display: flex;
@@ -9,7 +10,10 @@
   overflow-x: auto;
   scrollbar-width: none;
   min-width: 0;
-  flex: 1;
+  flex: 0 1 auto;
+  padding: 2px;
+  border-radius: $radius-full;
+  background: var(--bg-tertiary);
 
   &::-webkit-scrollbar {
     display: none;
@@ -25,27 +29,15 @@
   border: 0;
   background: none;
   cursor: pointer;
-  padding: 8px 12px 11px;
-  border-radius: 8px 8px 0 0;
+  padding: 6px 13px;
+  border-radius: $radius-full;
   font-size: 13px;
-  font-weight: 550;
+  font-weight: 500;
   color: var(--text-secondary);
   white-space: nowrap;
   transition:
     color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
     background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: -1px;
-    height: 2px;
-    border-radius: $radius-full;
-    background: transparent;
-    transition: background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
-  }
 
   &:disabled {
     cursor: not-allowed;
@@ -57,25 +49,21 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: -2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tab:hover:not(:disabled) {
+  .tab:hover:not(:disabled):not(.tabActive) {
     color: var(--text-primary);
-    background: color-mix(in srgb, var(--bg-tertiary) 55%, transparent);
   }
 }
 
 .tabActive {
   color: var(--text-primary);
-  font-weight: 650;
-
-  &::after {
-    background: var(--text-primary);
-  }
+  font-weight: 600;
+  background: var(--bg-primary);
 
   /* 整体禁用（保存中）时激活 tab 仍保持完整对比度 */
   &:disabled {
@@ -119,8 +107,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tab,
-  .tab::after {
+  .tab {
     transition: none;
   }
 

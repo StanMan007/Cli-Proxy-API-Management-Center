@@ -19,15 +19,15 @@
   min-height: 40px;
   padding: 0 12px;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-md;
-  background: var(--bg-primary);
+  border: 0;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   font-size: 13px;
   text-align: left;
   cursor: pointer;
   transition:
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
+    box-shadow 0.15s ease,
     background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
 
@@ -38,8 +38,7 @@
 
   &:focus-visible {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.18);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -49,7 +48,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border-color));
+      background: var(--bg-hover);
     }
   }
 }
@@ -125,9 +124,8 @@
   flex-direction: column;
   margin-top: 6px;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-md;
-  background: var(--bg-secondary);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   transform-origin: top;
   animation: excluded-panel-in var(--dur-hover, 200ms) var(--ease-out-strong, ease-out) both;
 }
@@ -155,8 +153,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 8px 8px 2px;
 }
 
 .searchIcon {
@@ -168,9 +165,10 @@
 
 .search {
   width: 100%;
-  padding: 6px 10px 6px 32px;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-sm;
+  height: 32px;
+  padding: 0 12px 0 32px;
+  border: 0;
+  border-radius: $radius-full;
   background: var(--bg-primary);
   color: var(--text-primary);
   font-size: 12px;
@@ -181,8 +179,10 @@
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.18);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -204,19 +204,19 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  padding: 7px 8px;
-  border-radius: $radius-sm;
+  padding: 8px 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+  transition: background-color 0.15s ease;
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: -2px;
+    outline: none;
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 .rowHighlighted {
-  background: var(--bg-tertiary);
+  background: var(--bg-hover);
 }
 
 .rowExcluded .checkbox {
@@ -274,15 +274,16 @@
 
 .badge {
   flex-shrink: 0;
-  padding: 2px 6px;
-  border: 1px dashed color-mix(in srgb, var(--primary-color) 38%, var(--border-color));
+  padding: 2px 8px;
   border-radius: $radius-full;
+  background: color-mix(in srgb, var(--primary-color) 10%, var(--bg-primary));
   color: var(--text-secondary);
   font-size: 10px;
+  font-weight: 500;
 }
 
 .badgeMuted {
-  border-style: dotted;
+  background: var(--bg-primary);
   color: var(--text-tertiary);
 }
 
@@ -303,9 +304,8 @@
   align-items: center;
   justify-content: space-between;
   gap: $spacing-sm;
-  padding: 8px 10px;
-  border-top: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  padding: 8px 10px 8px 14px;
+  background: color-mix(in srgb, var(--bg-primary) 45%, var(--bg-tertiary));
 }
 
 .footerCount {
@@ -321,9 +321,9 @@
 }
 
 .footerButton {
-  padding: 4px 8px;
+  padding: 4px 10px;
   border: 0;
-  border-radius: $radius-sm;
+  border-radius: $radius-full;
   background: transparent;
   color: var(--text-secondary);
   font-size: 11px;
@@ -338,8 +338,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 1px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -349,7 +349,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      background: var(--bg-tertiary);
+      background: var(--bg-hover);
       color: var(--text-primary);
     }
   }
@@ -365,27 +365,40 @@
   justify-content: space-between;
   gap: $spacing-sm;
   margin-top: 6px;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-md;
-  background: var(--bg-secondary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   font-size: 12px;
 }
 
 .retryButton {
   flex-shrink: 0;
-  padding: 4px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-sm;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: $radius-full;
   background: var(--bg-primary);
   color: var(--text-primary);
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+  transition:
+    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
+    background-color 0.15s ease;
 
   &:active {
     transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--bg-hover);
+    }
   }
 }
 
@@ -402,9 +415,11 @@
 }
 
 .ruleLabel {
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 500;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .ruleMatches {

@@ -16,16 +16,14 @@ $quota-font-size: 11.5px;
 .quotaSection {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 10px 11px;
+  gap: 10px;
+  padding: 12px 14px;
   font-size: $quota-font-size;
   border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
-  background: color-mix(in srgb, var(--bg-secondary) 55%, transparent);
+  background: var(--bg-tertiary);
 }
 
 .quotaMessage {
-  font-family: $font-mono;
   font-size: $quota-font-size;
   font-weight: 400;
   line-height: 1.5;
@@ -106,14 +104,14 @@ button.quotaMessageAction {
   align-items: baseline;
   gap: 6px;
   flex-shrink: 0;
-  font-family: $font-mono;
   font-size: $quota-font-size;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 
 .quotaPercent {
-  font-weight: 650;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
 }
 
@@ -150,7 +148,7 @@ button.quotaMessageAction {
 .quotaBar {
   height: 6px;
   border-radius: $radius-full;
-  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
   overflow: hidden;
 }
 
@@ -186,8 +184,7 @@ button.quotaMessageAction {
   gap: 5px;
   padding: 3px 8px;
   border-radius: $radius-full;
-  border: 1px solid var(--border-color);
-  background: color-mix(in srgb, var(--bg-primary) 70%, transparent);
+  background: var(--bg-primary);
 }
 
 .codexPlanLabel {
@@ -197,14 +194,12 @@ button.quotaMessageAction {
 }
 
 .codexPlanValue {
-  font-family: $font-mono;
   font-size: $quota-font-size;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
 .premiumPlanValue {
-  font-family: $font-mono;
   font-size: $quota-font-size;
   font-weight: 650;
   color: var(--amber-text);
@@ -239,9 +234,7 @@ button.quotaMessageAction {
   gap: 6px;
 
   & + & {
-    margin-top: 3px;
-    padding-top: 8px;
-    border-top: 1px dashed color-mix(in srgb, var(--border-color) 80%, transparent);
+    margin-top: 6px;
   }
 }
 
@@ -253,10 +246,9 @@ button.quotaMessageAction {
 }
 
 .antigravityQuotaGroupTitle {
-  font-family: $font-mono;
-  font-size: $quota-font-size;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -273,16 +265,15 @@ button.quotaMessageAction {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 9px;
+  padding: 9px 10px;
   border-radius: 8px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  background: var(--bg-primary);
 }
 
 .codexResetCreditsTitle {
-  font-family: $font-mono;
-  font-size: $quota-font-size;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
@@ -298,11 +289,10 @@ button.quotaMessageAction {
 }
 
 /* The compact host's credit rows have no border of their own, so the emphasis
-   is carried by a left rule and a tint rather than a border-colour swap. */
+   is carried by a warning tint alone. */
 .codexResetCreditRowSoon {
   padding: 2px 6px;
   margin: 0 -6px;
-  border-left: 2px solid var(--warning-border);
   border-radius: $radius-sm;
   background-color: var(--warning-bg);
 }
@@ -317,7 +307,6 @@ button.quotaMessageAction {
   flex-shrink: 0;
   margin-left: auto;
   white-space: nowrap;
-  font-family: $font-mono;
   font-variant-numeric: tabular-nums;
   color: var(--text-secondary);
 }

@@ -8,5 +8,5 @@
 .empty {
   width: 100%;
   height: 32px;
-  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(var(--bg-tertiary), var(--bg-tertiary)) bottom / 100% 2px no-repeat;
 }

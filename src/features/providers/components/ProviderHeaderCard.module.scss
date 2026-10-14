@@ -28,9 +28,10 @@
 
 .title {
   margin: 0;
-  font-size: 30px;
+  font-size: clamp(26px, 3.2vw, 30px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
@@ -38,10 +39,10 @@
   gap: 14px;
 
   .title {
-    font-size: 32px;
-    font-weight: 720;
-    line-height: 1.18;
-    letter-spacing: 0;
+    font-size: clamp(26px, 3.2vw, 30px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
   .btn {
@@ -53,15 +54,15 @@
 
 .subtitle {
   margin: 0;
-  font-size: 14px;
-  color: var(--muted-foreground);
+  font-size: 13.5px;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 
   @media (min-width: 1024px) {
@@ -74,17 +75,16 @@
   align-items: center;
   gap: 6px;
   height: 34px;
-  padding: 0 14px;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 500;
+  padding: 0 16px;
+  border-radius: $radius-full;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
   transition:
     background-color $transition-fast,
-    border-color $transition-fast,
     color $transition-fast;
-  border: 1px solid transparent;
-  background: transparent;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
 
   &:disabled {
@@ -99,25 +99,20 @@
 }
 
 .btnOutline {
-  border-color: var(--border-color);
-  background: var(--bg-primary);
+  background: var(--bg-tertiary);
 
   &:hover:not(:disabled) {
-    background: var(--bg-tertiary);
-    border-color: var(--border-hover);
+    background: var(--bg-hover);
   }
 }
 
+// Ink pill, as on the quota page.
 .btnPrimary {
-  background: var(--primary-color);
-  color: var(--primary-contrast);
+  background: var(--text-primary);
+  color: var(--bg-secondary);
 
   &:hover:not(:disabled) {
-    background: var(--primary-hover);
-  }
-
-  &:active:not(:disabled) {
-    background: var(--primary-active);
+    background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
   }
 }
 
@@ -131,23 +126,22 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--muted-bg);
-  color: var(--muted-foreground);
-  font-size: 13px;
+  padding: 4px 11px;
+  border-radius: $radius-full;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 12px;
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .chipPrimary {
-  border-color: var(--primary-30);
-  background: var(--primary-10);
-  color: var(--primary-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .chipAmber {
-  border-color: var(--amber-30);
   background: var(--amber-10);
   color: var(--amber-text);
 }
@@ -174,8 +168,7 @@
 @media (max-width: 768px) {
   .quickStartCard {
     .title {
-      font-size: 28px;
-      line-height: 1.2;
+      font-size: 26px;
     }
   }
 }

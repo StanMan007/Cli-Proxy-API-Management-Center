@@ -74,17 +74,17 @@
 }
 
 .columnHeader {
-  font-size: 13px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   margin-bottom: 8px;
   padding: 0 4px;
 }
 
 .item {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
   border-radius: 8px;
   padding: 10px 14px;
   font-size: 13px;
@@ -95,30 +95,27 @@
   width: 100%;
   max-width: 280px;
   position: relative;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:hover {
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background-color: var(--bg-hover);
     z-index: 10;
   }
 
   &.dropTarget {
-    background-color: var(--bg-secondary);
-    border-color: var(--primary-color);
-    border-width: 2px;
+    background-color: var(--bg-hover);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-primary) 45%, transparent);
   }
 
   &.selected {
-    border-color: var(--primary-color);
-    background-color: var(--bg-secondary);
-    box-shadow: 0 0 0 2px rgba($primary-color, 0.18);
+    background-color: var(--bg-hover);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
-// Mindmap-style provider branch (root node)
+// Mindmap-style provider branch (root node); the left stripe takes the provider colour inline
 .providerItem {
   border-left: 3px solid transparent;
   padding-left: 8px;
@@ -143,8 +140,8 @@
     align-items: center;
     justify-content: center;
     border: none;
-    background: var(--bg-secondary);
-    border-radius: 4px;
+    background: var(--bg-primary);
+    border-radius: 999px;
     cursor: pointer;
     color: var(--text-secondary);
     transition:
@@ -152,8 +149,13 @@
       color 0.15s;
 
     &:hover {
-      background: var(--border-color);
+      background: var(--bg-secondary);
       color: var(--text-primary);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
     }
   }
 
@@ -193,7 +195,6 @@
 
   &.dragging {
     opacity: 0.5;
-    border-style: dashed;
   }
 }
 
@@ -218,9 +219,9 @@
 
 .providerBadge {
   font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-primary);
   color: var(--text-secondary);
   margin-right: 8px;
   font-weight: 500;
@@ -237,24 +238,25 @@
   font-size: 11px;
   color: var(--text-tertiary);
   margin-left: 8px;
-  background: var(--bg-secondary);
-  padding: 1px 6px;
-  border-radius: 10px;
+  background: var(--bg-primary);
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
 }
 
 .contextMenu {
   position: fixed;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--floating-surface);
+  border-radius: 10px;
+  box-shadow: var(--floating-shadow);
   z-index: 9999;
-  min-width: 120px;
+  min-width: 140px;
   overflow: hidden;
-  padding: 4px 0;
+  padding: 4px;
 
   .menuItem {
-    padding: 8px 12px;
+    padding: 8px 10px;
+    border-radius: 6px;
     font-size: 13px;
     color: var(--text-primary);
     cursor: pointer;
@@ -264,7 +266,7 @@
     gap: 8px;
 
     &:hover {
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-tertiary);
     }
 
     &.danger {
@@ -278,8 +280,8 @@
 
   .menuDivider {
     height: 1px;
-    margin: 4px 0;
-    background: var(--border-color);
+    margin: 4px 6px;
+    background: var(--bg-tertiary);
     padding: 0;
     cursor: default;
     pointer-events: none;
@@ -304,10 +306,9 @@
   grid-template-columns: minmax(200px, 1fr) auto;
   gap: $spacing-md;
   align-items: center;
-  padding: $spacing-sm $spacing-md;
-  border: 1px solid var(--border-color);
-  border-radius: $radius-md;
-  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -352,10 +353,16 @@
   background: transparent;
   color: var(--error-color);
   padding: 6px;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    background: var(--bg-error-light);
+    background: var(--destructive-10);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }

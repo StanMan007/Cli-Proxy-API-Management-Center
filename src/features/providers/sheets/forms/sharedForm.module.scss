@@ -43,7 +43,7 @@
   .labelHint {
     font-size: 12px;
     line-height: 1.6;
-    color: var(--muted-foreground);
+    color: var(--text-tertiary);
   }
 
   .input,
@@ -139,8 +139,9 @@
 }
 
 .sectionTitle {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   margin: 0;
   display: flex;
@@ -149,9 +150,9 @@
 }
 
 .sectionDesc {
-  font-size: 12px;
-  color: var(--muted-foreground);
-  line-height: 1.5;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -162,14 +163,14 @@
 }
 
 .label {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
 .labelHint {
-  font-size: 11px;
-  color: var(--muted-foreground);
+  font-size: 11.5px;
+  color: var(--text-tertiary);
   font-weight: 400;
 }
 
@@ -178,22 +179,22 @@
   width: 100%;
   height: 36px;
   padding: 8px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  border-radius: $radius-md;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   font-size: 13px;
   font-family: inherit;
   box-sizing: border-box;
+  transition: box-shadow 0.15s ease;
 
   &::placeholder {
-    color: var(--text-tertiary);
+    color: var(--text-quaternary);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-10);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -248,8 +249,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -261,8 +262,8 @@
   color: var(--text-primary);
 
   small {
-    color: var(--muted-foreground);
-    font-size: 11px;
+    color: var(--text-tertiary);
+    font-size: 11.5px;
   }
 }
 
@@ -273,18 +274,17 @@
   min-width: 0;
 }
 
+// Spacing only: sections are separated by space, not rules.
 .divider {
   border: 0;
-  border-top: 1px solid var(--border-color);
-  margin: 4px 0;
+  margin: 6px 0;
 }
 
 .errorBox {
-  border: 1px solid var(--destructive-30);
   background: var(--destructive-10);
   color: var(--destructive-color);
   padding: 10px 12px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -297,14 +297,16 @@
 }
 
 .dt {
-  font-size: 11px;
-  color: var(--muted-foreground);
-  font-weight: 500;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
 .dd {
   margin: 0;
-  margin-top: 2px;
+  margin-top: 4px;
   font-size: 12px;
   font-family: $font-mono;
   color: var(--text-primary);
@@ -316,16 +318,32 @@
 }
 
 .entryCard {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 12px;
+  border-radius: 10px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
+}
+
+// Controls inside a --bg-tertiary inset step back up to --bg-primary so they stay visible.
+.entryCard,
+.modelEntryDetails,
+.discoveryPanel {
+  .input,
+  .textarea,
+  .discoverySearch,
+  .connectivityBtn,
+  .addBtn,
+  .showMoreBtn,
+  .entryBadge,
+  .discoveryAddedTag,
+  .thinkingLevelOption {
+    background: var(--bg-primary);
+  }
 }
 
 .entryCardHeader {
@@ -336,7 +354,7 @@
   min-width: 0;
   font-size: 12px;
   font-weight: 500;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
 }
 
 .entryCardToggle {
@@ -354,9 +372,9 @@
   cursor: pointer;
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 3px;
-    border-radius: var(--radius-sm);
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
+    border-radius: 6px;
   }
 }
 
@@ -402,7 +420,7 @@
 .sponsorSummaryUrl {
   max-width: min(360px, 45vw);
   font-family: $font-mono;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
 }
 
 .entryCardHeaderRight {
@@ -426,23 +444,23 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border: none;
+  border-radius: $radius-md;
   background: transparent;
   color: var(--text-tertiary);
   cursor: pointer;
   transition:
-    background-color $transition-fast,
-    color $transition-fast;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    background: var(--bg-tertiary);
+    background: var(--bg-hover);
     color: var(--text-primary);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: -1px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -481,14 +499,11 @@
   align-items: flex-start;
   gap: 10px;
   min-width: 0;
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
   cursor: pointer;
-  transition:
-    border-color $transition-fast,
-    background-color $transition-fast;
+  transition: background-color 0.15s ease;
 
   input {
     margin: 2px 0 0;
@@ -501,13 +516,16 @@
   }
 
   &:hover {
-    border-color: var(--primary-color);
+    background: var(--bg-hover);
   }
 }
 
 .sponsorUrlOptionActive {
-  border-color: var(--primary-color);
-  background: var(--primary-10);
+  background: color-mix(in srgb, var(--text-primary) 8%, var(--bg-tertiary));
+
+  &:hover {
+    background: color-mix(in srgb, var(--text-primary) 10%, var(--bg-tertiary));
+  }
 }
 
 .sponsorUrlOptionText {
@@ -522,7 +540,7 @@
     font-family: $font-mono;
     font-size: 11px;
     line-height: 1.4;
-    color: var(--muted-foreground);
+    color: var(--text-tertiary);
     overflow-wrap: anywhere;
   }
 }
@@ -548,10 +566,9 @@
   min-width: 0;
   flex-direction: column;
   gap: 4px;
-  padding: 10px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
 }
 
 .sponsorProtocolName {
@@ -564,7 +581,7 @@
   font-family: $font-mono;
   font-size: 11px;
   line-height: 1.4;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   overflow-wrap: anywhere;
 }
 
@@ -581,10 +598,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--success-color) 34%, var(--border-color));
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--success-color) 8%, var(--bg-primary));
+  padding: 10px 12px;
+  border-radius: $radius-md;
+  background: color-mix(in srgb, var(--success-color) 12%, var(--bg-primary));
   color: var(--text-primary);
   font-size: 11px;
   line-height: 1.4;
@@ -592,7 +608,6 @@
 
 .sponsorUsageResultWarning {
   color: var(--warning-text);
-  border-color: var(--warning-border);
   background: var(--warning-bg);
 }
 
@@ -604,7 +619,7 @@
 }
 
 .sponsorUsageMeta {
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
 }
 
 .connectivityRow {
@@ -618,22 +633,21 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  height: 30px;
+  padding: 0 14px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
   transition:
-    background-color $transition-fast,
-    border-color $transition-fast;
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover:not(:disabled) {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+    background: var(--bg-hover);
   }
 
   &:disabled {
@@ -647,9 +661,9 @@
   align-items: center;
   gap: 6px;
   height: 24px;
-  padding: 0 8px;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  padding: 0 9px;
+  border-radius: $radius-full;
+  border: none;
   background: transparent;
   color: var(--text-secondary);
   font-size: 11px;
@@ -671,11 +685,10 @@
 }
 
 .connectivityError {
-  border: 1px solid var(--destructive-30);
   background: var(--destructive-10);
   color: var(--destructive-color);
   padding: 8px 10px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   font-size: 11px;
   line-height: 1.4;
   word-break: break-word;
@@ -711,10 +724,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
 }
 
 .discoveryToolbar {
@@ -735,29 +747,28 @@
   left: 10px;
   display: inline-flex;
   align-items: center;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   pointer-events: none;
 }
 
 .discoverySearch {
   width: 100%;
   height: 32px;
-  padding: 6px 10px 6px 30px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  padding: 6px 12px 6px 30px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  font-size: 12px;
+  font-size: 12.5px;
   box-sizing: border-box;
 
   &::placeholder {
-    color: var(--text-tertiary);
+    color: var(--text-quaternary);
   }
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--primary-10);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
@@ -765,9 +776,8 @@
   padding: 16px;
   text-align: center;
   font-size: 12px;
-  color: var(--muted-foreground);
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  border-radius: $radius-md;
   background: var(--bg-primary);
 }
 
@@ -786,7 +796,7 @@
 
 .discoveryCount {
   font-size: 11px;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -796,12 +806,9 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   max-height: 240px;
   overflow-y: auto;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
 }
 
 .discoveryItem {
@@ -809,19 +816,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  background: var(--bg-primary);
   font-size: 12px;
   color: var(--text-primary);
-
-  &:last-child {
-    border-bottom: 0;
-  }
 }
 
 .discoveryItemExisting {
-  background: var(--muted-bg);
-  color: var(--muted-foreground);
+  background: transparent;
+  color: var(--text-tertiary);
 }
 
 .discoveryName {
@@ -839,17 +843,16 @@
 
 .discoveryAlias {
   font-size: 11px;
-  color: var(--muted-foreground);
+  color: var(--text-tertiary);
   word-break: break-all;
 }
 
 .discoveryAddedTag {
   font-size: 11px;
-  color: var(--muted-foreground);
-  padding: 2px 8px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
+  color: var(--text-secondary);
+  padding: 2px 9px;
+  border-radius: $radius-full;
+  background: var(--bg-tertiary);
 }
 
 .discoveryFooter {
@@ -864,18 +867,18 @@
   align-items: center;
   gap: 6px;
   height: 30px;
-  padding: 0 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  background: var(--primary-color);
-  color: var(--primary-contrast);
-  font-size: 12px;
-  font-weight: 500;
+  padding: 0 16px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--text-primary);
+  color: var(--bg-secondary);
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color $transition-fast;
+  transition: background-color 0.15s ease;
 
   &:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
   }
 
   &:disabled {
@@ -916,8 +919,8 @@
   background: transparent;
   color: var(--text-tertiary);
   cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: color $transition-fast;
+  border-radius: 6px;
+  transition: color 0.15s ease;
 
   &:hover:not(:disabled) {
     color: var(--text-primary);
@@ -967,10 +970,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-secondary);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
 }
 
 .thinkingFieldset {
@@ -1002,11 +1004,11 @@
 .thinkingLevelOption {
   width: 100%;
   min-width: 0;
-  padding: 8px 10px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
+  padding: 8px 12px;
+  border-radius: $radius-md;
+  background: var(--bg-tertiary);
   box-sizing: border-box;
+  transition: background-color 0.15s ease;
 }
 
 .thinkingLevelLabel {
@@ -1021,15 +1023,14 @@
   font-weight: 500;
 
   code {
-    color: var(--muted-foreground);
+    color: var(--text-tertiary);
     font-size: 10px;
     font-weight: 400;
   }
 }
 
 .thinkingLevelOptionSelected {
-  border-color: color-mix(in srgb, var(--primary-color) 50%, var(--border-color));
-  background: color-mix(in srgb, var(--primary-color) 8%, var(--bg-primary));
+  background: color-mix(in srgb, var(--text-primary) 8%, var(--bg-primary));
 
   .thinkingLevelLabel {
     color: var(--text-primary);
@@ -1058,13 +1059,12 @@
 .entryBadge {
   display: inline-flex;
   align-items: center;
-  padding: 1px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--border-color);
+  padding: 2px 8px;
+  border-radius: $radius-full;
   background: var(--bg-tertiary);
-  color: var(--muted-foreground);
-  font-size: 10px;
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1074,18 +1074,21 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-color);
-  background: var(--bg-primary);
+  padding: 6px 14px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+    background: var(--bg-hover);
+    color: var(--text-primary);
   }
 }
 
@@ -1093,11 +1096,12 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  border: none;
   background: transparent;
   color: var(--destructive-color);
+  transition: background-color 0.15s ease;
   cursor: pointer;
   font-size: 12px;
 
@@ -1115,19 +1119,22 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border-color);
-  background: var(--bg-primary);
+  padding: 6px 14px;
+  border-radius: $radius-full;
+  border: none;
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   align-self: flex-start;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
+    background: var(--bg-hover);
+    color: var(--text-primary);
   }
 }
 
@@ -1135,14 +1142,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
-  padding: 0 14px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 500;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: $radius-full;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color $transition-fast;
-  border: 1px solid transparent;
+  transition: background-color 0.15s ease;
+  border: none;
   background: transparent;
   color: var(--text-primary);
 
@@ -1154,7 +1161,6 @@
 
 .footerBtnGhost {
   background: transparent;
-  border-color: transparent;
 
   &:hover:not(:disabled) {
     background: var(--bg-tertiary);
@@ -1162,20 +1168,20 @@
 }
 
 .footerBtnOutline {
-  border-color: var(--border-color);
-  background: var(--bg-primary);
+  background: var(--bg-tertiary);
 
   &:hover:not(:disabled) {
-    background: var(--bg-tertiary);
+    background: var(--bg-hover);
   }
 }
 
+// Ink pill, matching the global .btn-primary.
 .footerBtnPrimary {
-  background: var(--primary-color);
-  color: var(--primary-contrast);
+  background: var(--text-primary);
+  color: var(--bg-secondary);
 
   &:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
   }
 }
 
@@ -1186,10 +1192,12 @@
 }
 
 .apiKeyEntriesLabel {
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
 }
 
 .apiKeyEntryList {
@@ -1207,10 +1215,9 @@
   gap: 8px;
   min-width: 0;
   max-width: 100%;
-  padding: 8px 12px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-secondary);
-  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border-radius: $radius-md;
   font-size: 12px;
 }
 
@@ -1221,10 +1228,11 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--primary-color);
-  color: var(--primary-contrast);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
   font-size: 11px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
 
@@ -1262,10 +1270,11 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: $radius-full;
+  font-size: 11px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 
   svg {
     display: block;

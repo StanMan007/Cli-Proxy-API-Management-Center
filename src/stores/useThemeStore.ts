@@ -72,30 +72,10 @@ export const useThemeStore = create<ThemeState>()(
         });
       },
 
+      // The panel is dark-only (the theme menu was removed), so a saved theme is ignored.
       initializeTheme: () => {
-        const { theme, setTheme } = get();
-
-        // 应用已保存的主题
-        setTheme(theme);
-
-        // 监听系统主题变化（仅在 auto 模式下生效）
-        if (!window.matchMedia) {
-          return () => {};
-        }
-
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const listener = () => {
-          const { theme: currentTheme } = get();
-          if (currentTheme === 'auto') {
-            const resolved = resolveAutoTheme();
-            applyTheme(resolved);
-            set({ resolvedTheme: normalizeResolvedTheme(resolved) });
-          }
-        };
-
-        mediaQuery.addEventListener('change', listener);
-
-        return () => mediaQuery.removeEventListener('change', listener);
+        get().setTheme('dark');
+        return () => {};
       },
     }),
     {

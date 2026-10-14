@@ -3,7 +3,7 @@
 
 /* ============================================================
  * 授权对话框：品牌头 → 步骤（打开授权页 / 设备码 / 回调）→ 底部实时状态条。
- * 主操作是墨色药丸；次操作描边药丸；遥测（链接、设备码、状态）一律 mono。
+ * 主操作是墨色药丸；次操作是 bg-tertiary 药丸；链接与设备码保留 mono，其余无边框。
  * ============================================================ */
 
 /* ---------- 壳层：局部改写全局 modal 的头/体/脚与动效 ---------- */
@@ -34,8 +34,8 @@
   :global(.modal-footer) {
     display: block;
     padding: 0;
-    border-top: 1px solid var(--border-color);
-    background: color-mix(in srgb, var(--bg-secondary) 60%, var(--bg-primary));
+    border-top: 0;
+    background: color-mix(in srgb, var(--bg-tertiary) 55%, var(--bg-primary));
   }
 }
 
@@ -78,8 +78,7 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
 }
 
@@ -107,10 +106,8 @@
 }
 
 .headingCaption {
-  font-family: $font-mono;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.02em;
   color: var(--text-tertiary);
 }
 
@@ -158,23 +155,22 @@
   transition: text-decoration-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 }
 
 .alert {
   padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--viz-failure) 28%, transparent);
-  background: color-mix(in srgb, var(--viz-failure) 8%, transparent);
+  background: color-mix(in srgb, var(--viz-failure) 9%, transparent);
   color: color-mix(in srgb, var(--viz-failure) 82%, var(--text-primary));
   font-size: 13px;
   line-height: 1.55;
   overflow-wrap: anywhere;
 }
 
-/* ---------- 步骤：mono 序号 + 细竖轨 ---------- */
+/* ---------- 步骤：填色序号 + 柔和竖轨 ---------- */
 
 .steps {
   counter-reset: oauth-step;
@@ -201,11 +197,12 @@
   &:not(:last-child)::before {
     content: '';
     position: absolute;
-    left: 10.5px;
+    left: 10px;
     top: 28px;
     bottom: 6px;
-    width: 1px;
-    background: var(--border-color);
+    width: 2px;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
   }
 }
 
@@ -216,11 +213,10 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 1px solid var(--border-primary);
-  background: var(--bg-primary);
-  font-family: $font-mono;
+  background: var(--bg-tertiary);
   font-size: 11px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
   color: var(--text-secondary);
 
@@ -254,11 +250,11 @@
 .optional {
   padding: 1px 7px;
   border-radius: 999px;
-  border: 1px solid var(--border-color);
-  font-family: $font-mono;
+  background: var(--bg-tertiary);
   font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   line-height: 1.5;
   color: var(--text-tertiary);
 }
@@ -280,8 +276,7 @@
   height: 38px;
   padding: 0 4px 0 12px;
   border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
   min-width: 0;
 }
 
@@ -310,9 +305,9 @@
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    var(--bg-tertiary) 0%,
-    color-mix(in srgb, var(--bg-tertiary) 40%, var(--bg-secondary)) 50%,
-    var(--bg-tertiary) 100%
+    var(--bg-hover) 0%,
+    color-mix(in srgb, var(--bg-hover) 40%, var(--bg-tertiary)) 50%,
+    var(--bg-hover) 100%
   );
   background-size: 200% 100%;
   animation: oauth-skeleton 1.2s linear infinite;
@@ -339,8 +334,7 @@
 .code {
   padding: 8px 14px;
   border-radius: 10px;
-  border: 1px dashed var(--border-primary);
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
   font-family: $font-mono;
   font-size: 22px;
   font-weight: 600;
@@ -408,7 +402,6 @@
   transition:
     transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
     background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
     box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
     color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
 
@@ -417,8 +410,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -440,8 +432,7 @@
 
 .secondary {
   @extend %pill;
-  border: 1px solid var(--border-primary);
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
 }
 
@@ -456,12 +447,10 @@
 @media (hover: hover) and (pointer: fine) {
   .primary:hover:not(:disabled) {
     background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
-    box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--text-primary) 45%, transparent);
   }
 
   .secondary:hover:not(:disabled) {
-    border-color: var(--border-hover);
-    background: var(--bg-tertiary);
+    background: var(--bg-hover);
   }
 
   .ghost:hover:not(:disabled) {
@@ -501,10 +490,8 @@
   gap: 9px;
   min-width: 0;
   margin: 0;
-  font-family: $font-mono;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: 0.01em;
   color: var(--text-primary);
 }
 
@@ -658,7 +645,7 @@
 
   .primary:focus-visible,
   .inlineLink:focus-visible {
-    outline-color: #{$sponsor-blue};
+    box-shadow: 0 0 0 2px sponsor-tint(55%);
   }
 
   .inlineLink {
@@ -670,7 +657,6 @@
 @media (hover: hover) and (pointer: fine) {
   :global(.modal).sponsorDialog .primary:hover:not(:disabled) {
     background: #{$sponsor-blue-strong-hover};
-    box-shadow: 0 10px 22px -10px sponsor-tint(70%);
   }
 }
 

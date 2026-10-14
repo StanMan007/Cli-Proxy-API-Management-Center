@@ -31,24 +31,23 @@
   font-size: 10px;
 }
 
-/* 显式勾选：实线 + primary 染色，读起来是「我选的」。 */
+/* 三档无边框填充，强度递减：
+   显式勾选 = primary 染色，读起来是「我选的」；
+   规则派生 = 中性 inset，「是某条规则算出来的」；
+   目录外的精确规则 = 最弱的半透明填充，指向一个无法确认存在的模型。 */
 .exact {
-  border: 1px solid color-mix(in srgb, var(--primary-color) 45%, var(--border-color));
-  background: color-mix(in srgb, var(--primary-color) 8%, var(--bg-primary));
+  background: color-mix(in srgb, var(--primary-color) 14%, var(--bg-tertiary));
 }
 
-/* 规则派生：虚线 = 「不是逐个挑的，是某条规则算出来的」。 */
 .wildcard {
-  border: 1px dashed color-mix(in srgb, var(--primary-color) 38%, var(--border-color));
-  background: transparent;
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
 }
 
-/* 目录外的精确规则：同样虚线，但更弱——它指向一个我们无法确认存在的模型。 */
 .unknown {
-  border: 1px dashed var(--border-color);
-  background: transparent;
+  background: color-mix(in srgb, var(--bg-tertiary) 45%, transparent);
   color: var(--text-tertiary);
+  font-style: italic;
 }
 
 .remove {
@@ -74,8 +73,8 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 1px;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--text-tertiary) 55%, transparent);
   }
 
   &:disabled {
@@ -85,7 +84,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      background: var(--bg-tertiary);
+      background: var(--bg-hover);
       color: var(--text-primary);
     }
   }
