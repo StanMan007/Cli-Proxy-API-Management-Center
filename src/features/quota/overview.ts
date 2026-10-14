@@ -5,7 +5,7 @@
  */
 
 import type { AnthropicResetGrant } from '@/services/api/claudeResetGrants';
-import type { ClaudeQuotaState, CodexQuotaState } from '@/types';
+import type { ClaudeQuotaState, CodexQuotaState, DevinQuotaState, MetaQuotaState } from '@/types';
 import {
   isDisabledAuthFile,
   normalizePlanType,
@@ -17,8 +17,12 @@ import { getQuotaCacheKey } from '@/utils/quota/identity';
 import type { QuotaFileEntry } from './logic';
 import type { QuotaCardState } from './providers';
 
-export const OVERVIEW_PROVIDERS = ['claude', 'codex'] as const;
+/** Providers whose quota is a weekly window (plus an optional shorter one), so they pool. */
+export const OVERVIEW_PROVIDERS = ['claude', 'codex', 'meta', 'devin'] as const;
 export type OverviewProvider = (typeof OVERVIEW_PROVIDERS)[number];
+
+export const isOverviewProvider = (type: string): type is OverviewProvider =>
+  (OVERVIEW_PROVIDERS as readonly string[]).includes(type);
 
 const HOUR_MS = 60 * 60 * 1000;
 /** Below this much weekly quota left, an account's meter turns red. */
@@ -36,15 +40,18 @@ export interface OverviewAccount {
   /** Relative plan size used to weight the pool (Codex Pro 200 counts as two Pro 100s). */
   weight: number;
   weeklyLeft: number | null;
-  fiveHourLeft: number | null;
-  /** When the current 5-hour window resets; null when no session window is running. */
-  fiveHourResetMs: number | null;
+  /**
+   * The shorter rolling window under the weekly one (Claude and Codex 5 hours, Muse's
+   * session window, Devin's day); null when the provider reports none. `hours` is null
+   * when the window's length is unknown.
+   */
+  session: { left: number | null; resetMs: number | null; hours: number | null } | null;
   /** A narrower weekly window (e.g. a model-scoped one) that is tighter than the main one. */
   tighter: { labelKey?: string; label: string; left: number } | null;
   refillAtMs: number | null;
   /** Expiry instants of every reset still available, soonest first (null = no expiry known). */
   resets: (number | null)[];
-  /** Codex reports when the paid period ends; Claude only when the subscription began. */
+  /** Codex and Devin report when the paid period ends; Claude only when the subscription began. */
   renewal: { kind: 'until'; atMs: number } | { kind: 'monthly'; sinceMs: number } | null;
 }
 
@@ -63,10 +70,13 @@ export interface OverviewPool {
   nextRefillMs: number | null;
 }
 
+const clampPercent = (percent: number | null | undefined): number | null =>
+  percent === null || percent === undefined ? null : Math.max(0, Math.min(100, percent));
+
 const leftOf = (usedPercent: number | null | undefined): number | null =>
-  usedPercent === null || usedPercent === undefined
-    ? null
-    : Math.max(0, Math.min(100, 100 - usedPercent));
+  usedPercent === null || usedPercent === undefined ? null : clampPercent(100 - usedPercent);
+
+type AccountDetails = Omit<OverviewAccount, 'key' | 'provider' | 'entry' | 'status'>;
 
 /**
  * Next subscription renewal after `now`. A monthly anchor rolls forward to its next
@@ -119,7 +129,7 @@ function codexPlan(planType: string | null | undefined): Pick<OverviewAccount, '
 function claudeAccount(
   quota: ClaudeQuotaState | undefined,
   grants: readonly AnthropicResetGrant[]
-): Omit<OverviewAccount, 'key' | 'provider' | 'entry' | 'status'> {
+): AccountDetails {
   const windows = quota?.windows ?? [];
   const weekly = windows.find((window) => window.id === 'seven-day');
   const fiveHour = windows.find((window) => window.id === 'five-hour');
@@ -145,8 +155,10 @@ function claudeAccount(
     plan: quota?.planType ? { key: `claude_quota.${quota.planType}` } : null,
     weight: 1,
     weeklyLeft,
-    fiveHourLeft: leftOf(fiveHour?.usedPercent),
-    fiveHourResetMs: fiveHour?.resetAtMs ?? null,
+    // Every Claude plan has a 5-hour window, so a loaded account always shows one.
+    session: quota
+      ? { left: leftOf(fiveHour?.usedPercent), resetMs: fiveHour?.resetAtMs ?? null, hours: 5 }
+      : null,
     tighter: tighter ?? null,
     refillAtMs: weekly?.resetAtMs ?? null,
     resets: sortResets(
@@ -160,16 +172,19 @@ function claudeAccount(
 
 function codexAccount(
   quota: CodexQuotaState | undefined
-): Omit<OverviewAccount, 'key' | 'provider' | 'entry' | 'status'> {
+): AccountDetails {
   const windows = quota?.windows ?? [];
   const weekly = windows.find((window) => window.id === 'weekly');
   const fiveHour = windows.find((window) => window.id === 'five-hour');
   const paidUntilMs = resolveResetMs([quota?.subscriptionActiveUntil]);
+  const fiveHourLeft = leftOf(fiveHour?.usedPercent);
   return {
     ...codexPlan(quota?.planType),
     weeklyLeft: leftOf(weekly?.usedPercent),
-    fiveHourLeft: leftOf(fiveHour?.usedPercent),
-    fiveHourResetMs: fiveHour?.resetAtMs ?? null,
+    session:
+      fiveHourLeft === null
+        ? null
+        : { left: fiveHourLeft, resetMs: fiveHour?.resetAtMs ?? null, hours: 5 },
     tighter: null,
     refillAtMs: weekly?.resetAtMs ?? null,
     resets: sortResets(
@@ -179,25 +194,96 @@ function codexAccount(
   };
 }
 
-/** One row per Claude/Codex credential; other providers are left to the detailed cards. */
+function metaAccount(quota: MetaQuotaState | undefined): AccountDetails {
+  const windows = quota?.data?.windows ?? [];
+  const weekly = windows.find((window) => window.id === 'weekly');
+  const session = windows.find((window) => window.id === 'window');
+  const sessionLeft = leftOf(session?.usedPercent);
+  // Muse reports reset instants in Unix seconds.
+  const msOf = (seconds: number | undefined) => (seconds === undefined ? null : seconds * 1000);
+  return {
+    plan: quota?.data?.planName ? { raw: quota.data.planName } : null,
+    weight: 1,
+    weeklyLeft: leftOf(weekly?.usedPercent),
+    session:
+      sessionLeft === null
+        ? null
+        : {
+            left: sessionLeft,
+            resetMs: msOf(session?.resetAt),
+            hours: session?.durationMinutes ? session.durationMinutes / 60 : null,
+          },
+    tighter: null,
+    refillAtMs: msOf(weekly?.resetAt),
+    resets: [],
+    renewal: null,
+  };
+}
+
+function devinAccount(quota: DevinQuotaState | undefined): AccountDetails {
+  const windows = quota?.windows ?? [];
+  const weekly = windows.find((window) => window.id === 'weekly');
+  const daily = windows.find((window) => window.id === 'daily');
+  const dailyLeft = clampPercent(daily?.remainingPercent);
+  return {
+    plan: quota?.plan ? { raw: quota.plan } : null,
+    weight: 1,
+    weeklyLeft: clampPercent(weekly?.remainingPercent),
+    session:
+      dailyLeft === null
+        ? null
+        : { left: dailyLeft, resetMs: daily?.resetAtMs ?? null, hours: daily?.periodHours ?? 24 },
+    tighter: null,
+    refillAtMs: weekly?.resetAtMs ?? null,
+    resets: [],
+    renewal: quota?.planEndMs ? { kind: 'until', atMs: quota.planEndMs } : null,
+  };
+}
+
+/** Each overview provider's quota state, read into the shared account shape. */
+const ACCOUNT_BUILDERS: {
+  [P in OverviewProvider]: (
+    quota: QuotaCardState | undefined,
+    grants: readonly AnthropicResetGrant[]
+  ) => AccountDetails;
+} = {
+  claude: (quota, grants) => claudeAccount(quota as ClaudeQuotaState | undefined, grants),
+  codex: (quota) => codexAccount(quota as CodexQuotaState | undefined),
+  meta: (quota) => metaAccount(quota as MetaQuotaState | undefined),
+  devin: (quota) => devinAccount(quota as DevinQuotaState | undefined),
+};
+
+/** One row per credential of an overview provider; the rest are left to the detailed cards. */
 export function buildOverviewAccounts(
   entries: readonly QuotaFileEntry[],
   quotaFor: (entry: QuotaFileEntry) => QuotaCardState | undefined,
   claudeGrants: Readonly<Record<string, readonly AnthropicResetGrant[]>>
 ): OverviewAccount[] {
   return entries.flatMap((entry): OverviewAccount[] => {
-    if (entry.type !== 'claude' && entry.type !== 'codex') return [];
+    const provider = entry.type;
+    if (!isOverviewProvider(provider)) return [];
     const key = getQuotaCacheKey(entry.file);
     const quota = quotaFor(entry);
     const status = quota?.status ?? 'idle';
     const usable = status === 'success' || (status === 'loading' && quota !== undefined);
-    const details =
-      entry.type === 'claude'
-        ? claudeAccount(usable ? (quota as ClaudeQuotaState) : undefined, claudeGrants[key] ?? [])
-        : codexAccount(usable ? (quota as CodexQuotaState) : undefined);
-    return [{ key, provider: entry.type, entry, status, ...details }];
+    const details = ACCOUNT_BUILDERS[provider](
+      usable ? quota : undefined,
+      claudeGrants[key] ?? []
+    );
+    return [{ key, provider, entry, status, ...details }];
   });
 }
+
+/**
+ * True while an account has nothing to show yet: its first read is in flight, or the
+ * page's first automatic load (`firstLoadPending`) is about to request it (that load
+ * skips paused accounts). Its row holds a placeholder of the loaded shape instead of
+ * "Not loaded".
+ */
+export const isAwaitingQuota = (account: OverviewAccount, firstLoadPending: boolean) =>
+  account.weeklyLeft === null &&
+  (account.status === 'loading' ||
+    (firstLoadPending && account.status === 'idle' && !isDisabledAuthFile(account.entry.file)));
 
 /**
  * Pool a provider's accounts, lowest weekly-left first so the tight ones lead. Pausing

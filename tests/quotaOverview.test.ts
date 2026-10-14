@@ -1,16 +1,24 @@
 import { describe, expect, test } from 'bun:test';
 import type { QuotaFileEntry } from '@/features/quota/logic';
-import { buildOverviewAccounts, nextRenewalMs, poolAccounts } from '@/features/quota/overview';
+import {
+  buildOverviewAccounts,
+  isAwaitingQuota,
+  nextRenewalMs,
+  poolAccounts,
+} from '@/features/quota/overview';
 import type { QuotaCardState } from '@/features/quota/providers';
 import type { AnthropicResetGrant } from '@/services/api/claudeResetGrants';
-import type { ClaudeQuotaState, CodexQuotaState } from '@/types';
+import type { ClaudeQuotaState, CodexQuotaState, DevinQuotaState, MetaQuotaState } from '@/types';
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
 const NOW = Date.UTC(2026, 9, 14, 12);
 const iso = (ms: number) => new Date(ms).toISOString();
 
-const entry = (type: 'claude' | 'codex' | 'meta', name: string): QuotaFileEntry => ({
+const entry = (
+  type: 'claude' | 'codex' | 'meta' | 'devin' | 'kimi',
+  name: string
+): QuotaFileEntry => ({
   type,
   file: { name, type },
 });
@@ -97,7 +105,7 @@ const accountsFor = (
 
 describe('quota overview', () => {
   test('pools Codex by plan weight and sorts the tightest account first', () => {
-    const entries = [entry('codex', 'big'), entry('codex', 'small'), entry('meta', 'm')];
+    const entries = [entry('codex', 'big'), entry('codex', 'small'), entry('kimi', 'k')];
     const accounts = accountsFor(
       { big: codex('pro', 85, 5 * DAY), small: codex('prolite', 10, 2 * DAY) },
       entries
@@ -134,9 +142,49 @@ describe('quota overview', () => {
       entry('claude', 'b'),
     ]);
     expect(tight.weeklyLeft).toBe(60);
-    expect(tight).toMatchObject({ fiveHourLeft: 90, fiveHourResetMs: NOW + HOUR });
+    expect(tight.session).toEqual({ left: 90, resetMs: NOW + HOUR, hours: 5 });
     expect(tight.tighter).toMatchObject({ label: 'Fable', left: 10 });
     expect(loose.tighter).toBeNull();
+  });
+
+  test('reads Muse and Devin into the same weekly and session windows', () => {
+    const muse: MetaQuotaState = {
+      status: 'success',
+      data: {
+        planName: 'Muse Pro',
+        windows: [
+          { id: 'window', usedPercent: 30, resetAt: (NOW + HOUR) / 1000, durationMinutes: 300 },
+          { id: 'weekly', usedPercent: 75, resetAt: (NOW + 2 * DAY) / 1000 },
+        ],
+      },
+    };
+    const devin: DevinQuotaState = {
+      status: 'success',
+      windows: [
+        { id: 'daily', remainingPercent: 80, resetAtMs: NOW + 6 * HOUR, periodHours: 24 },
+        { id: 'weekly', remainingPercent: 40, resetAtMs: NOW + 4 * DAY, periodHours: 168 },
+      ],
+      observedAtMs: NOW,
+      plan: 'Team',
+      planStartMs: null,
+      planEndMs: NOW + 20 * DAY,
+    };
+    const [m, d] = accountsFor({ m: muse, d: devin }, [entry('meta', 'm'), entry('devin', 'd')]);
+    expect(m).toMatchObject({
+      provider: 'meta',
+      plan: { raw: 'Muse Pro' },
+      weeklyLeft: 25,
+      refillAtMs: NOW + 2 * DAY,
+      session: { left: 70, resetMs: NOW + HOUR, hours: 5 },
+      renewal: null,
+    });
+    expect(d).toMatchObject({
+      provider: 'devin',
+      weeklyLeft: 40,
+      session: { left: 80, resetMs: NOW + 6 * HOUR, hours: 24 },
+      renewal: { kind: 'until', atMs: NOW + 20 * DAY },
+    });
+    expect(poolAccounts('meta', [m, d])).toMatchObject({ remaining: 25, capacity: 100 });
   });
 
   test('collects banked resets per account, one entry per reset, soonest expiry first', () => {
@@ -165,4 +213,28 @@ describe('quota overview', () => {
       Date.UTC(2026, 1, 28)
     );
   });
+
+  const awaitingCases: [string, QuotaCardState | undefined, boolean, boolean, boolean][] = [
+    ['nothing requested before the first load', undefined, false, true, true],
+    ['paused, so the first load skips it', undefined, true, true, false],
+    ['nothing requested after the first load', undefined, false, false, false],
+    ['first read in flight', { status: 'loading', windows: [] }, false, false, true],
+    [
+      'refresh with quota already shown',
+      { ...codex('plus', 40, DAY), status: 'loading' },
+      false,
+      true,
+      false,
+    ],
+    ['read failed', { status: 'error', windows: [], error: 'boom' }, false, true, false],
+    ['loaded', codex('plus', 40, DAY), false, true, false],
+  ];
+  test.each(awaitingCases)(
+    'a row awaits quota: %s',
+    (_, quota, disabled, firstLoadPending, awaiting) => {
+      const file = { name: 'a', type: 'codex', disabled };
+      const [account] = accountsFor(quota ? { a: quota } : {}, [{ type: 'codex', file }]);
+      expect(isAwaitingQuota(account, firstLoadPending)).toBe(awaiting);
+    }
+  );
 });

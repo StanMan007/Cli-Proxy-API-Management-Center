@@ -2270,6 +2270,8 @@
     "label": "额度总览",
     "window_weekly": "7 天限额",
     "window_five_hour": "5 小时限额",
+    "window_hours": "{{hours}} 小时限额",
+    "window_session": "会话限额",
     "next_refill": "下次恢复 {{time}}",
     "resets_expiring": "{{count}} 个于 {{date}} 过期",
     "no_resets": "—",

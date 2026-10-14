@@ -1,15 +1,17 @@
 /**
- * Quota overview: one compact row per Claude/Codex account, grouped by provider
- * under the provider's summed weekly quota, then the pooled forecast chart.
- * Everything else (session credits, credit balances, other providers) stays in
- * the detailed cards below.
+ * Quota overview: one compact row per account of every provider with a weekly
+ * window (OVERVIEW_PROVIDERS), grouped by provider under its summed weekly quota,
+ * then the pooled forecast chart. Everything else (session credits, credit
+ * balances, other providers) stays in the detailed cards below.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { IconRefreshCw } from '@/components/ui/icons';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
+import { useCountUp } from '@/hooks/motion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import type { AnthropicResetGrant } from '@/services/api/claudeResetGrants';
 import type { ResolvedTheme } from '@/types';
@@ -29,6 +31,8 @@ import { useClaudeResetGrants } from '../providers/claude/ClaudeResetGrants';
 import {
   buildOverviewAccounts,
   EXPIRY_WARNING_MS,
+  isAwaitingQuota,
+  isOverviewProvider,
   LOW_LEFT_PERCENT,
   nextRenewalMs,
   OVERVIEW_PROVIDERS,
@@ -45,6 +49,8 @@ export type QuotaOverviewProps = {
   /** Credentials left out because the server retired them; they need a new login. */
   needsLoginCount: number;
   quotaFor: (entry: QuotaFileEntry) => QuotaCardState | undefined;
+  /** The page's first automatic quota load hasn't started yet; unread rows hold placeholders. */
+  firstLoadPending: boolean;
   now: number;
   resolvedTheme: ResolvedTheme;
   canUseActions: boolean;
@@ -82,6 +88,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
     entries,
     needsLoginCount,
     quotaFor,
+    firstLoadPending,
     now,
     resolvedTheme,
     canUseActions,
@@ -123,6 +130,20 @@ export function QuotaOverview(props: QuotaOverviewProps) {
     [accounts]
   );
   const history = usePoolHistory(pools);
+  // A pool with nothing loaded yet holds placeholders for its total and forecast.
+  const pendingProviders = useMemo(
+    () =>
+      new Set(
+        pools
+          .filter(
+            (pool) =>
+              pool.capacity === 0 &&
+              pool.accounts.some((account) => isAwaitingQuota(account, firstLoadPending))
+          )
+          .map((pool) => pool.provider)
+      ),
+    [pools, firstLoadPending]
+  );
   const [chartView, setChartView] = useLocalStorage<ChartView>(
     'cli-proxy-quota-chart-view',
     'forecast'
@@ -142,8 +163,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
   const others = useMemo(() => {
     const types = new Map<string, number>();
     entries.forEach((entry) => {
-      if (entry.type === 'claude' || entry.type === 'codex' || isDisabledAuthFile(entry.file))
-        return;
+      if (isOverviewProvider(entry.type) || isDisabledAuthFile(entry.file)) return;
       types.set(entry.type, (types.get(entry.type) ?? 0) + 1);
     });
     return types;
@@ -169,6 +189,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
             label={providerLabel(pool.provider)}
             perHour={drainRate(pool.accounts, history[pool.provider] ?? [], now)?.perHour ?? null}
             relative={relative}
+            pending={pendingProviders.has(pool.provider)}
           />
           <div className={`${styles.row} ${styles.columns}`} aria-hidden="true">
             <span>{t('quota_overview.col_account')}</span>
@@ -181,6 +202,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
               key={account.key}
               account={account}
               quota={quotaFor(account.entry)}
+              awaiting={isAwaitingQuota(account, firstLoadPending)}
               now={now}
               relative={relative}
               canUseActions={canUseActions}
@@ -227,6 +249,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
           <QuotaForecast
             pools={pools}
             history={history}
+            pendingProviders={pendingProviders}
             now={now}
             resolvedTheme={resolvedTheme}
             relative={relative}
@@ -264,6 +287,7 @@ function GroupHead({
   label,
   perHour,
   relative,
+  pending,
 }: {
   pool: OverviewPool;
   iconSrc: string | null | undefined;
@@ -271,8 +295,11 @@ function GroupHead({
   label: string;
   perHour: number | null;
   relative: (ms: number) => string;
+  pending: boolean;
 }) {
   const { t } = useTranslation();
+  // Counts up from the placeholder's 0 when the pool's first reads land, then tracks refreshes.
+  const remaining = useCountUp(Math.round(pool.remaining));
   // Accounts that haven't loaded have no plan yet; their rows already say so.
   const planCounts = new Map<string, number>();
   pool.accounts.forEach((account) => {
@@ -306,12 +333,16 @@ function GroupHead({
         </span>
       </div>
       <div className={styles.groupTotal}>
-        <span className={styles.big}>
-          {pool.capacity > 0 ? `${Math.round(pool.remaining)}%` : '--'}
-          {pool.capacity > 0 && (
-            <small>{t('quota_overview.forecast_of', { capacity: `${pool.capacity}%` })}</small>
-          )}
-        </span>
+        {pending ? (
+          <Skeleton width={150} height={38} rounded={8} />
+        ) : (
+          <span className={styles.big}>
+            {pool.capacity > 0 ? `${remaining}%` : '--'}
+            {pool.capacity > 0 && (
+              <small>{t('quota_overview.forecast_of', { capacity: `${pool.capacity}%` })}</small>
+            )}
+          </span>
+        )}
         <span className={styles.groupStats}>{stats.join(' · ')}</span>
       </div>
     </div>
@@ -392,9 +423,56 @@ function LimitWindow({
   );
 }
 
+/** A quota window's shape with nothing in it yet, so a row keeps its height when quota lands. */
+function WindowPlaceholder({ minor = false }: { minor?: boolean }) {
+  return (
+    <div className={`${styles.window} ${minor ? styles.windowMinor : ''}`}>
+      <div className={styles.placeholderHead}>
+        <Skeleton width={minor ? 96 : 132} height={12} rounded={4} />
+      </div>
+      <Skeleton height={minor ? 5 : 8} rounded={999} />
+    </div>
+  );
+}
+
+/** Stand-in while the credential list loads: the overview's layout with nothing in it yet. */
+export function QuotaOverviewSkeleton() {
+  const { t } = useTranslation();
+  return (
+    <section
+      className={`${styles.overview} ${styles.overviewSkeleton}`}
+      aria-label={t('quota_overview.label')}
+      aria-busy="true"
+    >
+      {[0, 1].map((group) => (
+        <div key={group} className={styles.group}>
+          <div className={styles.groupHead}>
+            <Skeleton width={180} height={20} rounded={6} />
+            <Skeleton width={150} height={38} rounded={8} />
+          </div>
+          {[0, 1].map((row) => (
+            <div key={row} className={styles.row}>
+              <Skeleton width="70%" height={14} rounded={4} />
+              <Skeleton width={36} height={20} rounded={999} />
+              <div className={styles.limits}>
+                <WindowPlaceholder />
+                <WindowPlaceholder minor />
+              </div>
+              <Skeleton className={styles.resetsPlaceholder} width={84} height={12} rounded={4} />
+            </div>
+          ))}
+        </div>
+      ))}
+      <Skeleton height={400} rounded={14} />
+    </section>
+  );
+}
+
 type AccountRowProps = {
   account: OverviewAccount;
   quota: QuotaCardState | undefined;
+  /** Quota is on its way; the row holds placeholders instead of "Not loaded". */
+  awaiting: boolean;
   now: number;
   relative: (ms: number) => string;
   canUseActions: boolean;
@@ -410,6 +488,7 @@ function AccountRow(props: AccountRowProps) {
   const {
     account,
     quota,
+    awaiting,
     now,
     relative,
     canUseActions,
@@ -434,7 +513,7 @@ function AccountRow(props: AccountRowProps) {
     onRefresh
   );
   const adapter = QUOTA_ADAPTERS[entry.type];
-  const codexResetAvailable =
+  const adapterResetAvailable =
     !isClaude &&
     status === 'success' &&
     quota !== undefined &&
@@ -443,7 +522,7 @@ function AccountRow(props: AccountRowProps) {
     ? claudeReset.blocked
       ? null
       : claudeReset.confirm
-    : codexResetAvailable && canRefresh && !resetting
+    : adapterResetAvailable && canRefresh && !resetting
       ? onReset
       : null;
 
@@ -458,7 +537,16 @@ function AccountRow(props: AccountRowProps) {
       ? t(account.plan.key)
       : account.plan.raw
     : null;
-  const hasData = account.weeklyLeft !== null;
+  const hasData = account.weeklyLeft !== null || account.session !== null;
+  const sessionHours = account.session?.hours ?? null;
+  const sessionLabel =
+    sessionHours === null
+      ? t('quota_overview.window_session')
+      : sessionHours === 5
+        ? t('quota_overview.window_five_hour')
+        : t('quota_overview.window_hours', { hours: Math.round(sessionHours * 10) / 10 });
+  // A row that mounted empty animates its quota in; one that mounted with quota stays still.
+  const [startedEmpty] = useState(!hasData);
   // "Oct 19, 21:00 · in 5 days" for a window's next reset; null once it has passed.
   const when = (ms: number | null) =>
     ms !== null && ms > now
@@ -471,7 +559,9 @@ function AccountRow(props: AccountRowProps) {
       : null;
 
   return (
-    <div className={`${styles.row} ${paused ? styles.paused : ''}`}>
+    <div
+      className={`${styles.row} ${paused ? styles.paused : ''} ${startedEmpty && hasData ? styles.arrived : ''}`}
+    >
       <div className={styles.account}>
         <div className={styles.accountLine}>
           <span className={styles.accountName} title={accountName(entry)}>
@@ -520,7 +610,7 @@ function AccountRow(props: AccountRowProps) {
           disabled={!canUseActions || pausing}
         />
       </span>
-      <div className={styles.limits}>
+      <div className={styles.limits} aria-busy={awaiting || undefined}>
         {hasData ? (
           <>
             <LimitWindow
@@ -528,13 +618,12 @@ function AccountRow(props: AccountRowProps) {
               left={account.weeklyLeft}
               when={when(account.refillAtMs)}
             />
-            {/* Every Claude plan has a 5-hour window; Codex shows it only when reported. */}
-            {(isClaude || account.fiveHourLeft !== null) && (
+            {account.session && (
               <LimitWindow
                 minor
-                label={t('quota_overview.window_five_hour')}
-                left={account.fiveHourLeft}
-                when={when(account.fiveHourResetMs)}
+                label={sessionLabel}
+                left={account.session.left}
+                when={when(account.session.resetMs)}
               />
             )}
             {account.tighter && (
@@ -550,13 +639,20 @@ function AccountRow(props: AccountRowProps) {
           </>
         ) : status === 'error' ? (
           <span className={styles.errorText}>{t('quota_overview.load_failed')}</span>
-        ) : loading ? (
-          <span className={styles.skeletonBar} aria-busy="true" />
+        ) : awaiting ? (
+          <>
+            <WindowPlaceholder />
+            <WindowPlaceholder minor />
+          </>
         ) : (
           <span className={styles.none}>{t('quota_overview.not_loaded')}</span>
         )}
       </div>
-      <ResetList resets={account.resets} now={now} relative={relative} />
+      {awaiting ? (
+        <Skeleton className={styles.resetsPlaceholder} width={84} height={12} rounded={4} />
+      ) : (
+        <ResetList resets={account.resets} now={now} relative={relative} />
+      )}
       <span className={styles.rowActions}>
         <button
           type="button"
