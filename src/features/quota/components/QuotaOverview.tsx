@@ -1,8 +1,9 @@
 /**
  * Quota overview: one compact row per account of every provider with a weekly
  * window (OVERVIEW_PROVIDERS), grouped by provider under its summed weekly quota,
- * then the pooled forecast chart. Everything else (session credits, credit
- * balances, other providers) stays in the detailed cards below.
+ * then the pooled forecast chart. Rows show only the weekly window unless the shorter
+ * ones are switched on or an account's is nearly spent (showsSession). Everything else
+ * (session credits, credit balances, other providers) stays in the detailed cards below.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -37,6 +38,7 @@ import {
   nextRenewalMs,
   OVERVIEW_PROVIDERS,
   poolAccounts,
+  showsSession,
   type OverviewAccount,
   type OverviewPool,
 } from '../overview';
@@ -79,6 +81,9 @@ const accountName = (entry: QuotaFileEntry) => entry.file.email?.trim() || entry
 
 const CHART_VIEWS = ['forecast', 'timeline'] as const;
 type ChartView = (typeof CHART_VIEWS)[number];
+
+/** The "show 5-hour limits" switch, remembered across visits; off shows weekly windows only. */
+const useShowAllSessions = () => useLocalStorage('cli-proxy-quota-show-sessions', false);
 
 const sortExpiries = (resets: readonly (number | null)[]) =>
   [...resets].sort((a, b) => (a ?? Infinity) - (b ?? Infinity));
@@ -144,6 +149,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
       ),
     [pools, firstLoadPending]
   );
+  const [showAllSessions, setShowAllSessions] = useShowAllSessions();
   const [chartView, setChartView] = useLocalStorage<ChartView>(
     'cli-proxy-quota-chart-view',
     'forecast'
@@ -176,6 +182,17 @@ export function QuotaOverview(props: QuotaOverviewProps) {
 
   return (
     <section className={styles.overview} aria-label={t('quota_overview.label')}>
+      <div className={styles.toolbar}>
+        <button
+          type="button"
+          className={styles.pill}
+          aria-pressed={showAllSessions}
+          title={t('quota_overview.sessions_hint')}
+          onClick={() => setShowAllSessions(!showAllSessions)}
+        >
+          {t(showAllSessions ? 'quota_overview.hide_sessions' : 'quota_overview.show_sessions')}
+        </button>
+      </div>
       {pools.map((pool) => (
         <div key={pool.provider} className={styles.group}>
           <GroupHead
@@ -203,6 +220,8 @@ export function QuotaOverview(props: QuotaOverviewProps) {
               account={account}
               quota={quotaFor(account.entry)}
               awaiting={isAwaitingQuota(account, firstLoadPending)}
+              showSession={showsSession(account, showAllSessions)}
+              showSessionPlaceholder={showAllSessions}
               now={now}
               relative={relative}
               canUseActions={canUseActions}
@@ -438,12 +457,16 @@ function WindowPlaceholder({ minor = false }: { minor?: boolean }) {
 /** Stand-in while the credential list loads: the overview's layout with nothing in it yet. */
 export function QuotaOverviewSkeleton() {
   const { t } = useTranslation();
+  const [showAllSessions] = useShowAllSessions();
   return (
     <section
       className={`${styles.overview} ${styles.overviewSkeleton}`}
       aria-label={t('quota_overview.label')}
       aria-busy="true"
     >
+      <div className={styles.toolbar}>
+        <Skeleton width={128} height={26} rounded={999} />
+      </div>
       {[0, 1].map((group) => (
         <div key={group} className={styles.group}>
           <div className={styles.groupHead}>
@@ -456,7 +479,7 @@ export function QuotaOverviewSkeleton() {
               <Skeleton width={36} height={20} rounded={999} />
               <div className={styles.limits}>
                 <WindowPlaceholder />
-                <WindowPlaceholder minor />
+                {showAllSessions && <WindowPlaceholder minor />}
               </div>
               <Skeleton className={styles.resetsPlaceholder} width={84} height={12} rounded={4} />
             </div>
@@ -473,6 +496,10 @@ type AccountRowProps = {
   quota: QuotaCardState | undefined;
   /** Quota is on its way; the row holds placeholders instead of "Not loaded". */
   awaiting: boolean;
+  /** Show the shorter window's bar; hidden unless switched on or nearly spent. */
+  showSession: boolean;
+  /** While awaiting, hold room for the shorter window only when they are all switched on. */
+  showSessionPlaceholder: boolean;
   now: number;
   relative: (ms: number) => string;
   canUseActions: boolean;
@@ -489,6 +516,8 @@ function AccountRow(props: AccountRowProps) {
     account,
     quota,
     awaiting,
+    showSession,
+    showSessionPlaceholder,
     now,
     relative,
     canUseActions,
@@ -618,7 +647,7 @@ function AccountRow(props: AccountRowProps) {
               left={account.weeklyLeft}
               when={when(account.refillAtMs)}
             />
-            {account.session && (
+            {account.session && showSession && (
               <LimitWindow
                 minor
                 label={sessionLabel}
@@ -642,7 +671,7 @@ function AccountRow(props: AccountRowProps) {
         ) : awaiting ? (
           <>
             <WindowPlaceholder />
-            <WindowPlaceholder minor />
+            {showSessionPlaceholder && <WindowPlaceholder minor />}
           </>
         ) : (
           <span className={styles.none}>{t('quota_overview.not_loaded')}</span>

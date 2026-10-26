@@ -5,6 +5,7 @@ import {
   isAwaitingQuota,
   nextRenewalMs,
   poolAccounts,
+  showsSession,
 } from '@/features/quota/overview';
 import type { QuotaCardState } from '@/features/quota/providers';
 import type { AnthropicResetGrant } from '@/services/api/claudeResetGrants';
@@ -237,4 +238,19 @@ describe('quota overview', () => {
       expect(isAwaitingQuota(account, firstLoadPending)).toBe(awaiting);
     }
   );
+
+  const sessionCases: [string, number | null, boolean, boolean][] = [
+    ['hidden while it has room', 20, false, false],
+    ['shown once nearly spent', 19, false, true],
+    ['hidden when its usage is unknown', null, false, false],
+    ['shown when switched on', 90, true, true],
+  ];
+  test.each(sessionCases)('a shorter window is %s', (_, left, showAll, shown) => {
+    const session = { left, resetMs: NOW + HOUR, hours: 5 };
+    expect(showsSession({ session }, showAll)).toBe(shown);
+  });
+
+  test('an account without a shorter window never shows one', () => {
+    expect(showsSession({ session: null }, true)).toBe(false);
+  });
 });
