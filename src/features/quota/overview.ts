@@ -30,6 +30,8 @@ export const isOverviewProvider = (type: string): type is OverviewProvider =>
 const HOUR_MS = 60 * 60 * 1000;
 /** Below this much weekly quota left, an account's meter turns red. */
 export const LOW_LEFT_PERCENT = 25;
+/** Below this much left, an account's shorter window shows even while those windows are hidden. */
+export const SESSION_LOW_LEFT_PERCENT = 20;
 /** Resets that expire within this window are shown in amber before they are lost. */
 export const EXPIRY_WARNING_MS = 7 * 24 * HOUR_MS;
 
@@ -176,9 +178,7 @@ function claudeAccount(
   };
 }
 
-function codexAccount(
-  quota: CodexQuotaState | undefined
-): AccountDetails {
+function codexAccount(quota: CodexQuotaState | undefined): AccountDetails {
   const windows = quota?.windows ?? [];
   const weekly = windows.find((window) => window.id === 'weekly');
   const fiveHour = windows.find((window) => window.id === 'five-hour');
@@ -272,10 +272,7 @@ export function buildOverviewAccounts(
     const quota = quotaFor(entry);
     const status = quota?.status ?? 'idle';
     const usable = status === 'success' || (status === 'loading' && quota !== undefined);
-    const details = ACCOUNT_BUILDERS[provider](
-      usable ? quota : undefined,
-      claudeGrants[key] ?? []
-    );
+    const details = ACCOUNT_BUILDERS[provider](usable ? quota : undefined, claudeGrants[key] ?? []);
     return [{ key, provider, entry, status, ...details }];
   });
 }
@@ -290,6 +287,14 @@ export const isAwaitingQuota = (account: OverviewAccount, firstLoadPending: bool
   account.weeklyLeft === null &&
   (account.status === 'loading' ||
     (firstLoadPending && account.status === 'idle' && !isDisabledAuthFile(account.entry.file)));
+
+/**
+ * Whether a row shows its shorter (5-hour, session or daily) window: always when they are
+ * switched on, otherwise only once it is nearly spent and about to bind before the weekly one.
+ */
+export const showsSession = (account: Pick<OverviewAccount, 'session'>, showAll: boolean) =>
+  account.session !== null &&
+  (showAll || (account.session.left !== null && account.session.left < SESSION_LOW_LEFT_PERCENT));
 
 /**
  * Pool a provider's accounts, lowest weekly-left first so the tight ones lead. Pausing

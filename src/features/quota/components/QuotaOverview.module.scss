@@ -87,6 +87,17 @@
   }
 }
 
+/* Sits above the first group, right-aligned, holding view switches for every row. */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: -16px;
+
+  .pill[aria-pressed='true'] {
+    background: var(--ov-inset-hover);
+  }
+}
+
 /* Account groups: no boxes; whitespace and hover fills carry the structure. */
 .group {
   display: flex;
