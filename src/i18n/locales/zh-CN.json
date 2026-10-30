@@ -2473,15 +2473,8 @@
     "view_timeline": "时间线"
   },
   "api_credits": {
-    "title": "API 额度",
-    "left_of": "共 {{allowance}}",
-    "estimate_note": "按 api-claude-* 流量以标价估算，准确余额见 Console › Billing。",
-    "col_account": "账号",
-    "col_left": "本周期剩余",
-    "col_expires": "额度到期",
-    "spent_one": "已用 {{spent}} · {{count}} 次请求",
-    "spent_other": "已用 {{spent}} · {{count}} 次请求",
-    "failed_one": "{{count}} 次请求失败",
-    "failed_other": "{{count}} 次请求失败"
+    "meta": "API 额度 {{amount}}",
+    "badge": "API {{amount}}",
+    "hint": "API 额度剩余 {{left}}（共 {{allowance}}），{{date}} 到期。按 api-claude-* 流量以标价估算，准确余额见 Console › Billing。"
   }
 }

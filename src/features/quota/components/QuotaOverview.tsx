@@ -4,6 +4,7 @@
  * then the pooled forecast chart. Rows show only the weekly window unless the shorter
  * ones are switched on or an account's is nearly spent (showsSession). Everything else
  * (session credits, credit balances, other providers) stays in the detailed cards below.
+ * Claude accounts with monthly API credits also show the estimated dollars left.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,6 +15,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 import { useCountUp } from '@/hooks/motion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import type { ApiCreditAccount } from '@/services/api';
 import type { AnthropicResetGrant } from '@/services/api/claudeResetGrants';
 import type { ResolvedTheme } from '@/types';
 import { formatRelativeInstant, isDisabledAuthFile } from '@/utils/quota';
@@ -25,6 +27,7 @@ import {
   isThemeSurfaceIconProvider,
 } from '@/features/authFiles/constants';
 import { drainRate } from '../forecast';
+import { useApiCredits } from '../hooks/useApiCredits';
 import { usePoolHistory } from '../hooks/usePoolHistory';
 import type { QuotaFileEntry } from '../logic';
 import { QUOTA_ADAPTERS, type QuotaCardState } from '../providers';
@@ -85,6 +88,14 @@ type ChartView = (typeof CHART_VIEWS)[number];
 /** The "show 5-hour limits" switch, remembered across visits; off shows weekly windows only. */
 const useShowAllSessions = () => useLocalStorage('cli-proxy-quota-show-sessions', false);
 
+/** Whole dollars, for the compact API-credit labels. */
+const formatDollars = (amount: number, language: string | undefined) =>
+  new Intl.NumberFormat(language, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(amount);
+
 const sortExpiries = (resets: readonly (number | null)[]) =>
   [...resets].sort((a, b) => (a ?? Infinity) - (b ?? Infinity));
 
@@ -135,6 +146,11 @@ export function QuotaOverview(props: QuotaOverviewProps) {
     [accounts]
   );
   const history = usePoolHistory(pools);
+  const apiCredits = useApiCredits();
+  const apiCreditFor = (account: OverviewAccount) =>
+    account.entry.type === 'claude'
+      ? apiCredits.get(accountName(account.entry).toLowerCase())
+      : undefined;
   // A pool with nothing loaded yet holds placeholders for its total and forecast.
   const pendingProviders = useMemo(
     () =>
@@ -207,6 +223,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
             perHour={drainRate(pool.accounts, history[pool.provider] ?? [], now)?.perHour ?? null}
             relative={relative}
             pending={pendingProviders.has(pool.provider)}
+            apiCredits={pool.accounts.flatMap((account) => apiCreditFor(account) ?? [])}
           />
           <div className={`${styles.row} ${styles.columns}`} aria-hidden="true">
             <span>{t('quota_overview.col_account')}</span>
@@ -231,6 +248,7 @@ export function QuotaOverview(props: QuotaOverviewProps) {
               pausing={pausingKeys.has(account.key)}
               onSetEnabled={(enabled) => onSetEnabled(account.entry, enabled)}
               reportGrants={reportGrants}
+              apiCredit={apiCreditFor(account)}
             />
           ))}
         </div>
@@ -307,6 +325,7 @@ function GroupHead({
   perHour,
   relative,
   pending,
+  apiCredits,
 }: {
   pool: OverviewPool;
   iconSrc: string | null | undefined;
@@ -315,8 +334,10 @@ function GroupHead({
   perHour: number | null;
   relative: (ms: number) => string;
   pending: boolean;
+  /** API credits of this pool's accounts; empty for pools without any. */
+  apiCredits: readonly ApiCreditAccount[];
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // Counts up from the placeholder's 0 when the pool's first reads land, then tracks refreshes.
   const remaining = useCountUp(Math.round(pool.remaining));
   // Accounts that haven't loaded have no plan yet; their rows already say so.
@@ -348,6 +369,16 @@ function GroupHead({
           {[
             t('quota_overview.accounts', { count: pool.accounts.length }),
             ...[...planCounts.entries()].map(([plan, count]) => `${count} ${plan}`),
+            ...(apiCredits.length > 0
+              ? [
+                  t('api_credits.meta', {
+                    amount: formatDollars(
+                      apiCredits.reduce((sum, credit) => sum + credit.remainingUsd, 0),
+                      i18n.resolvedLanguage
+                    ),
+                  }),
+                ]
+              : []),
           ].join(' · ')}
         </span>
       </div>
@@ -509,6 +540,8 @@ type AccountRowProps = {
   pausing: boolean;
   onSetEnabled: (enabled: boolean) => void;
   reportGrants: (key: string, grants: readonly AnthropicResetGrant[]) => void;
+  /** This account's monthly API credits, when it has a key in the gateway. */
+  apiCredit: ApiCreditAccount | undefined;
 };
 
 function AccountRow(props: AccountRowProps) {
@@ -527,6 +560,7 @@ function AccountRow(props: AccountRowProps) {
     pausing,
     onSetEnabled,
     reportGrants,
+    apiCredit,
   } = props;
   const { t, i18n } = useTranslation();
   const { entry, status } = account;
@@ -599,6 +633,23 @@ function AccountRow(props: AccountRowProps) {
           {planLabel && (
             <span className={`${styles.badge} ${account.weight > 1 ? styles.badgeStrong : ''}`}>
               {planLabel}
+            </span>
+          )}
+          {apiCredit && (
+            <span
+              className={styles.badge}
+              title={t('api_credits.hint', {
+                left: formatDollars(apiCredit.remainingUsd, i18n.resolvedLanguage),
+                allowance: formatDollars(apiCredit.allowanceUsd, i18n.resolvedLanguage),
+                date: new Date(apiCredit.cycleEnd).toLocaleDateString(i18n.resolvedLanguage, {
+                  month: 'short',
+                  day: 'numeric',
+                }),
+              })}
+            >
+              {t('api_credits.badge', {
+                amount: formatDollars(apiCredit.remainingUsd, i18n.resolvedLanguage),
+              })}
             </span>
           )}
         </div>

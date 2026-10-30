@@ -27,7 +27,6 @@ import { isDisabledAuthFile } from '@/utils/quota';
 import { getQuotaCacheKey } from '@/utils/quota/identity';
 import { QuotaHeader } from './components/QuotaHeader';
 import { QuotaOverview, QuotaOverviewSkeleton } from './components/QuotaOverview';
-import { ApiCredits } from './components/ApiCredits';
 import { QuotaCard } from './components/QuotaCard';
 import { QuotaTimeline } from './components/QuotaTimeline';
 import {
@@ -457,7 +456,6 @@ export function QuotaPage() {
         onSetEnabled={(entry, enabled) => void setCredentialEnabled(entry.file, enabled)}
       />
 
-      <ApiCredits now={now} />
 
       {/* A provider with no overview group (Kimi, xAI…) shows its detailed cards directly. */}
       {(detailsOpen ||

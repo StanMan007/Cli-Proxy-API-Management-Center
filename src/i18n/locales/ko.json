@@ -2478,15 +2478,8 @@
     "view_timeline": "타임라인"
   },
   "api_credits": {
-    "title": "API 크레딧",
-    "left_of": "{{allowance}} 중 남음",
-    "estimate_note": "api-claude-* 트래픽을 정가로 계산한 추정치입니다. 정확한 잔액은 Console › Billing에서 확인하세요.",
-    "col_account": "계정",
-    "col_left": "이번 주기 잔액",
-    "col_expires": "크레딧 만료",
-    "spent_one": "{{spent}} 사용 · 요청 {{count}}건",
-    "spent_other": "{{spent}} 사용 · 요청 {{count}}건",
-    "failed_one": "실패한 요청 {{count}}건",
-    "failed_other": "실패한 요청 {{count}}건"
+    "meta": "API 크레딧 {{amount}}",
+    "badge": "API {{amount}}",
+    "hint": "API 크레딧 {{allowance}} 중 {{left}} 남음, {{date}} 만료. api-claude-* 트래픽을 정가로 계산한 추정치이며 정확한 잔액은 Console › Billing에서 확인하세요."
   }
 }

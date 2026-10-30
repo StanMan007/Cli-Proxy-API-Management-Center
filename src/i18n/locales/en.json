@@ -2478,15 +2478,8 @@
     "view_timeline": "Timeline"
   },
   "api_credits": {
-    "title": "API credits",
-    "left_of": "left of {{allowance}}",
-    "estimate_note": "Counted from api-claude-* traffic at list price. Console › Billing shows the exact balance.",
-    "col_account": "Account",
-    "col_left": "Left this cycle",
-    "col_expires": "Credits expire",
-    "spent_one": "{{spent}} spent · {{count}} request",
-    "spent_other": "{{spent}} spent · {{count}} requests",
-    "failed_one": "{{count}} failed request",
-    "failed_other": "{{count}} failed requests"
+    "meta": "{{amount}} API credits",
+    "badge": "{{amount}} API",
+    "hint": "{{left}} of {{allowance}} in API credits left, expiring {{date}}. Estimated from api-claude-* traffic at list price; Console › Billing shows the exact balance."
   }
 }
