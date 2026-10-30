@@ -554,7 +554,6 @@
     "reset_confirm_button": "確認重置",
     "reset_not_confirmed": "尚未確認額度重置成功，請重新整理額度後再決定是否重試。",
     "reset_cooldown_failed": "額度已重置，但代理冷卻清除失敗。請在原連線的認證檔案頁面使用「清除冷卻」，不要再次消耗重置卡。",
-
     "reset_success": "已重置「{{name}}」的 Codex 配額",
     "reset_failed": "重置「{{name}}」的 Codex 配額失敗：{{message}}",
     "plan_plus": "Plus",
@@ -2500,5 +2499,17 @@
     "view_label": "圖表檢視",
     "view_forecast": "預測",
     "view_timeline": "時間軸"
+  },
+  "api_credits": {
+    "title": "API 額度",
+    "left_of": "共 {{allowance}}",
+    "estimate_note": "依 api-claude-* 流量以定價估算，確切餘額見 Console › Billing。",
+    "col_account": "帳號",
+    "col_left": "本週期剩餘",
+    "col_expires": "額度到期",
+    "spent_one": "已用 {{spent}} · {{count}} 次請求",
+    "spent_other": "已用 {{spent}} · {{count}} 次請求",
+    "failed_one": "{{count}} 次請求失敗",
+    "failed_other": "{{count}} 次請求失敗"
   }
 }

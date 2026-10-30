@@ -2482,5 +2482,21 @@
     "view_label": "Вид графика",
     "view_forecast": "Прогноз",
     "view_timeline": "Шкала"
+  },
+  "api_credits": {
+    "title": "API-кредиты",
+    "left_of": "осталось из {{allowance}}",
+    "estimate_note": "Оценка по трафику api-claude-* по прейскуранту. Точный баланс — в Console › Billing.",
+    "col_account": "Аккаунт",
+    "col_left": "Осталось в цикле",
+    "col_expires": "Кредиты сгорают",
+    "spent_one": "потрачено {{spent}} · {{count}} запрос",
+    "spent_other": "потрачено {{spent}} · запросов: {{count}}",
+    "failed_one": "{{count}} неудачный запрос",
+    "failed_other": "неудачных запросов: {{count}}",
+    "spent_few": "потрачено {{spent}} · запросов: {{count}}",
+    "spent_many": "потрачено {{spent}} · запросов: {{count}}",
+    "failed_few": "неудачных запросов: {{count}}",
+    "failed_many": "неудачных запросов: {{count}}"
   }
 }

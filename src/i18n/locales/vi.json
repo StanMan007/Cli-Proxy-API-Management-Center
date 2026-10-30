@@ -2482,5 +2482,17 @@
     "view_label": "Kiểu biểu đồ",
     "view_forecast": "Dự báo",
     "view_timeline": "Dòng thời gian"
+  },
+  "api_credits": {
+    "title": "Tín dụng API",
+    "left_of": "còn lại trong {{allowance}}",
+    "estimate_note": "Ước tính từ lưu lượng api-claude-* theo giá niêm yết. Số dư chính xác xem tại Console › Billing.",
+    "col_account": "Tài khoản",
+    "col_left": "Còn lại kỳ này",
+    "col_expires": "Tín dụng hết hạn",
+    "spent_one": "đã dùng {{spent}} · {{count}} yêu cầu",
+    "spent_other": "đã dùng {{spent}} · {{count}} yêu cầu",
+    "failed_one": "{{count}} yêu cầu lỗi",
+    "failed_other": "{{count}} yêu cầu lỗi"
   }
 }

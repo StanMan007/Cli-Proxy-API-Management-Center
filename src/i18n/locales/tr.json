@@ -2476,5 +2476,17 @@
     "view_label": "Grafik Görünümü",
     "view_forecast": "Tahmin",
     "view_timeline": "Zaman Çizelgesi"
+  },
+  "api_credits": {
+    "title": "API kredileri",
+    "left_of": "{{allowance}} içinden kalan",
+    "estimate_note": "api-claude-* trafiğinden liste fiyatıyla tahmin edilir. Kesin bakiye Console › Billing'de.",
+    "col_account": "Hesap",
+    "col_left": "Bu dönem kalan",
+    "col_expires": "Kredilerin bitişi",
+    "spent_one": "{{spent}} harcandı · {{count}} istek",
+    "spent_other": "{{spent}} harcandı · {{count}} istek",
+    "failed_one": "{{count}} başarısız istek",
+    "failed_other": "{{count}} başarısız istek"
   }
 }

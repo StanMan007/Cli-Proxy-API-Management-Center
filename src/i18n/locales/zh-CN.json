@@ -554,7 +554,6 @@
     "reset_confirm_button": "确认重置",
     "reset_not_confirmed": "未确认额度重置成功，请刷新额度后再决定是否重试。",
     "reset_cooldown_failed": "额度已重置，但代理冷却清除失败。请在原连接的认证文件页面使用“清除冷却”，不要再次消耗重置卡。",
-
     "reset_success": "已重置 \"{{name}}\" 的 Codex 额度",
     "reset_failed": "重置 \"{{name}}\" 的 Codex 额度失败：{{message}}",
     "plan_plus": "Plus",
@@ -2472,5 +2471,17 @@
     "view_label": "图表视图",
     "view_forecast": "预测",
     "view_timeline": "时间线"
+  },
+  "api_credits": {
+    "title": "API 额度",
+    "left_of": "共 {{allowance}}",
+    "estimate_note": "按 api-claude-* 流量以标价估算，准确余额见 Console › Billing。",
+    "col_account": "账号",
+    "col_left": "本周期剩余",
+    "col_expires": "额度到期",
+    "spent_one": "已用 {{spent}} · {{count}} 次请求",
+    "spent_other": "已用 {{spent}} · {{count}} 次请求",
+    "failed_one": "{{count}} 次请求失败",
+    "failed_other": "{{count}} 次请求失败"
   }
 }

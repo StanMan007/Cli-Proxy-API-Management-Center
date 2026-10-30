@@ -27,6 +27,7 @@ import { isDisabledAuthFile } from '@/utils/quota';
 import { getQuotaCacheKey } from '@/utils/quota/identity';
 import { QuotaHeader } from './components/QuotaHeader';
 import { QuotaOverview, QuotaOverviewSkeleton } from './components/QuotaOverview';
+import { ApiCredits } from './components/ApiCredits';
 import { QuotaCard } from './components/QuotaCard';
 import { QuotaTimeline } from './components/QuotaTimeline';
 import {
@@ -422,10 +423,7 @@ export function QuotaPage() {
   // detailed cards' skeleton, which would vanish once the overview takes over. A remembered
   // tab for another provider keeps the cards' skeleton: that's what it will show.
   const showOverviewSkeleton =
-    loading &&
-    files.length === 0 &&
-    !detailsOpen &&
-    (tab === 'all' || isOverviewProvider(tab));
+    loading && files.length === 0 && !detailsOpen && (tab === 'all' || isOverviewProvider(tab));
 
   return (
     <div className={styles.page} ref={revealRef}>
@@ -458,6 +456,8 @@ export function QuotaPage() {
         pausingKeys={pausingKeys}
         onSetEnabled={(entry, enabled) => void setCredentialEnabled(entry.file, enabled)}
       />
+
+      <ApiCredits now={now} />
 
       {/* A provider with no overview group (Kimi, xAI…) shows its detailed cards directly. */}
       {(detailsOpen ||
